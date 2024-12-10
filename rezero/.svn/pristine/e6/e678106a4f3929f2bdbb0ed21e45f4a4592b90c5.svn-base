@@ -1,0 +1,330 @@
+body {
+    font-family: Pretendard, sans-serif !important;
+    background-color: #2b6466 !important;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Navbar styling */
+.navbar {
+    height: 94px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+}
+
+.navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    /* Vertically align items */
+    justify-content: space-between;
+    /* Space between logo and menu */
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.navbar img.logo {
+    height: 38px;
+    padding-left: 230px;
+    /* Move logo 48px to the right */
+}
+
+.navbar .menu {
+    display: flex;
+    align-items: center;
+    /* Vertically align menu items */
+    gap: 16px;
+    padding-right: 210px;
+    /* Move logo 48px to the right */
+}
+
+.navbar img.icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* Rectangle styling */
+.custom-rectangle {
+    width: 814px;
+    height: 962px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #fff;
+}
+
+.second-rectangle {
+    margin-top: 12px !important;
+    width: 880px;
+    height: 708px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #effafb;
+}
+
+.third-rectangle {
+    width: 880px;
+    height: 420px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #effafb;
+}
+
+/* 지도와 버튼 사이 간격 설정 */
+.cu-1 {
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+}
+
+/* 버튼 내부 원 스타일 */
+.rounded-circle {
+    background-color: #0c4f49;
+}
+
+/* 버튼 스타일 */
+.custom-small-rectangle {
+    position: relative;
+    /* 원 위치 조정을 위한 기준 설정 */
+    width: 394px;
+    /* 버튼 너비: 지도 너비의 반 */
+    height: 70px;
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+    padding-left: 30px;
+    /* 원 크기(56px)와 여백(28px)만큼 패딩 설정 */
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #effafb;
+    border: none;
+    cursor: pointer;
+
+    /* 텍스트 스타일 추가 */
+    font-family: Pretendard;
+    font-weight: 600;
+    font-size: 28px;
+    text-align: left;
+    /* 텍스트 왼쪽 정렬 */
+    display: flex;
+    align-items: center;
+    /* 텍스트와 원 세로 중앙 정렬 */
+    color: #094037;
+    /* 텍스트 색상 변경 */
+}
+
+/* Hover 효과 */
+.custom-small-rectangle:hover {
+    background-color: #d4f4f6;
+    /* 배경색 변경 */
+    color: #094037;
+    /* 텍스트 색상 변경 */
+    text-decoration: none;
+    /* 밑줄 제거 */
+}
+
+/* 하단 아이콘 스타일 */
+img.community-fill {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    /* 이미지를 원에 맞게 */
+}
+
+.Rectangle-4 {
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 #95c0c3;
+    background-color: #fff;
+    position: absolute;
+}
+
+
+/* Chart 아이콘 스타일 */
+img.Chart {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+/* 텍스트 스타일 */
+.text-mystyle-1 {
+    font-size: 30px;
+    font-weight: 600;
+    color: #020606;
+}
+
+.text-mystyle-2 {
+    color: #0c4f49;
+}
+
+.text-mystyle-3 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #020606;
+}
+
+.text-mystyle-4 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #00342f;
+}
+
+/* 텍스트 배경 스타일 */
+.text-background {
+    background-color: #c1dcde;
+    /* 배경색 */
+    padding: 5px 10px;
+    /* 텍스트 안쪽 여백 */
+    border-radius: 10px;
+    /* 라운드 모서리 */
+    display: inline-block;
+    /* 배경색 영역을 텍스트에 맞춤 */
+    font-weight: bold;
+    /* 텍스트 강조 (필요 시 제거 가능) */
+}
+
+/* 공통 스타일 */
+.Rectangle-9 {
+    width: 124px;
+    height: 46px;
+    position: absolute;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: #ffd0e8;
+    /* 기본 핑크색 */
+    box-shadow: none;
+    /* 기본 섀도우 없음 */
+    transition: all 0.3s ease;
+    /* 부드러운 상태 변경 */
+}
+
+.Rectangle-9.active {
+    background-color: #5aa5a7;
+    /* 선택된 녹색 */
+    box-shadow: 3px 3px 0 0 #4e9395;
+    /* 선택된 섀도우 */
+}
+/* 텍스트 공통 스타일 */
+.styled-text {
+    font-family: Pretendard, sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: normal;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+/* 선택된 텍스트 색상 */
+.active-text {
+    color: #042122;
+}
+
+/* 선택되지 않은 텍스트 색상 */
+.inactive-text {
+    color: #76445e;
+}
+
+/* 슬라이더 컨테이너 */
+.slider-container {
+    width: 362px;
+    height: 34px;
+    border-radius: 20px;
+    background-color: #fff;
+    box-shadow: 1px 1px 0 0 #95c0c3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 텍스트 중앙 정렬 */
+    position: relative;
+}
+
+/* 슬라이드 버튼 */
+.slider-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 180px;
+    height: 34px;
+    border-radius: 20px;
+    background-color: #3d8d90;
+    transition: left 0.3s ease;
+    /* 버튼 이동 부드럽게 */
+}
+
+/* 고정된 텍스트 */
+.slider-text-left,
+.slider-text-right {
+    font-size: 20px;
+    font-weight: 500;
+    z-index: 1;
+    position: absolute;
+    width: 180px;
+    text-align: center;
+    line-height: 34px;
+    pointer-events: none;
+    transition: color 0.3s ease;
+    /* 글자 색상 변경 부드럽게 */
+}
+
+/* 왼쪽 텍스트 */
+.slider-text-left {
+    left: 0;
+    color: #fff;
+    /* 초기 색상 */
+}
+
+/* 오른쪽 텍스트 */
+.slider-text-right {
+    right: 0;
+    color: #3d8d90;
+    /* 초기 색상 */
+}
+
+/* 스타일 버튼 */
+.styled-button {
+    width: 146px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    /* 수직 정렬 */
+    justify-content: center;
+    /* 수평 정렬 */
+    border-radius: 20px;
+    font-family: Pretendard, sans-serif;
+    /* 폰트 설정 */
+    font-size: 18px;
+    /* 텍스트 크기 */
+    font-weight: 600;
+    /* 텍스트 굵기 */
+    text-align: center;
+    /* 텍스트 중앙 정렬 */
+    cursor: pointer;
+    border: solid 3px #90B2AF;
+    /* 비활성화 상태 테두리 */
+    background-color: #FFFFFF;
+    /* 비활성화 배경 */
+    color: #90B2AF;
+    /* 비활성화 텍스트 색상 */
+}
+
+/* 활성화된 버튼 스타일 */
+.styled-button.active {
+    border: solid 3px #e871ae;
+    /* 활성화 상태 테두리 */
+    background-color: #fff1f8;
+    /* 활성화 배경 */
+    color: #e871ae;
+    /* 활성화 텍스트 색상 */
+}
+
+
+/* Footer styling */
+footer {
+    height: 132px;
+    background-color: #f5feff;
+    box-shadow: -3px -3px 0 0 rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+}

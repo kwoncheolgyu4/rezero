@@ -1,0 +1,785 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="../inc/header.jsp"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<title>메인</title>
+
+<style type="text/css">
+#map-container {
+	margin-top: 100px; /* 브라우저 기본 여백 제거 */
+	margin-left: 20px;
+   	padding: 0;
+	width: 90%; /* 화면 전체 너비 */
+	height: 80%; /* 화면 전체 높이 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* background-color: #f0f0f0; */
+}
+
+svg, object {
+	width: 100%; /* 컨테이너의 100% */
+	height: 100%; /* 컨테이너의 100% */
+	display: block; /* 블록 요소로 설정 */
+}
+
+#back-button {
+	position: absolute;
+	right: 20px;
+	top: 40px;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	cursor: pointer;
+	font-size: 16px;
+	display: none; /* 초기에는 숨김 */
+	filter: brightness(1.1); /* 밝기를 20% 증가 */
+	transition: opacity 0.3s ease; /* 부드러운 전환 효과 */
+	opacity: 0.8; /* 기본 불투명도 */
+	
+}
+
+#back-button:hover {
+	opacity: 1; /* 기본 불투명도 */
+}
+
+.table {
+ }
+ 
+
+tr > th{
+	padding: 4px 8px !important;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #effafb !important;
+	border-right:none;
+	color: #020606 !important;
+}
+
+tr > td{
+	padding: 4px 8px !important;
+	vertical-align: middle;
+	border-right:none;
+	color: #020606 !important;
+}
+
+tr > td:first-child {
+    border-left:none;
+}
+
+tr > th:first-child {
+    border-left:none;
+}
+
+</style>
+</head>
+
+<body>
+
+	<!-- Layout -->
+    <div class="mt-5 mb-5 d-flex justify-content-center">
+        <div class="row">
+            <div class="col-md-auto">
+			
+				<!-- 지도 -->
+				<div class="custom-rectangle d-flex justify-content-center align-items-center cu-1" 
+				style="background-color: #effafb !important; position: relative;">
+					<div class="text-mystyle-2" style="position: absolute; top:40px; left:50px;">대전광역시 에너지 사용량</div>
+					<select class="form-select" id="year" style="position: absolute; top:100px; left:46px; width: 24%">
+					  <option value="1" selected="selected">2022(하반기)</option>
+					  <option value="2">2022(상반기)</option>
+					  <option value="3">2021(하반기)</option>
+					  <option value="4">2021(상반기)</option>
+					  <option value="5">2020(하반기)</option>
+					  <option value="6">2020(상반기)</option>
+					</select>
+				
+					<img id="back-button" src="resources/icon/arrow-left.png" alt="구 선택으로 돌아가기" onclick="showGuMap()" style="cursor: pointer;">
+					<div id="map-container">
+				        <object id="map-view" type="image/svg+xml" data="resources/static/daejeon_map_gu_ref_ref.html"></object>
+				    </div>
+				</div>
+
+				<!-- 지도 아래 버튼 -->
+                <div class="d-flex justify-content-between" style="gap: 12px;">
+                    <button class="custom-small-rectangle-2 d-flex align-items-center">
+                        <div class="rounded-circle d-flex justify-content-center align-items-center"
+                            style="width: 56px; height: 56px; margin-right: 20px; background-color: white;">
+                            <img id="weatherIcon" alt="날씨 아이콘" style="width: 80px; height: 80px;">
+                        </div>
+                        <div id="weathertext"></div>
+                    </button>
+                </div>
+                <div class="d-flex justify-content-between" style="gap: 12px;">
+				<button class="custom-small-rectangle d-flex align-items-center" onclick="location.href='${pageContext.request.contextPath}/carbon'">
+                        <div class="rounded-circle d-flex justify-content-center align-items-center"
+                            style="width: 56px; height: 56px; margin-right: 20px;">
+                            <img src="resources/icon/community-fill@3x.png" class="community-fill" alt="Icon">
+                        </div>
+                        		우리 집 탄소 배출량
+                    </button>
+                    <button class="custom-small-rectangle d-flex align-items-center" onclick="location.href='${pageContext.request.contextPath}/energy'">
+                        <div class="rounded-circle d-flex justify-content-center align-items-center"
+                            style="width: 56px; height: 56px; margin-right: 20px;">
+                            <img src="resources/icon/lightbulb-flash-line@3x.png" class="community-fill" alt="Icon">
+                        </div>
+                        		에너지 절약 방법
+                    </button>
+                </div>
+            </div>
+
+			<!-- Right: 차트 위, 데이터 아래 -->
+			<div class="col-md d-flex flex-column" style="gap: 24px;">
+				<!-- 첫 번째 네모칸 -->
+			<div class="second-rectangle position-relative d-flex flex-column" style="padding: 24px;">
+					<!-- 상단 아이콘과 텍스트 -->
+                    <div class="d-flex align-items-center">
+                        <img src="resources/icon/chart@3x.png" class="Chart" alt="Chart Icon">
+                        <span class="text-mystyle-1 ms-3">
+                            <span class="text-mystyle-2" id="region">서구</span> 에너지 사용량</span></div>
+						<!-- 슬라이더 -->
+						<div class="slider-container" style="margin-left: 20px;"
+						onclick="toggleSlider()">
+						<!-- 고정된 텍스트 -->
+						<span class="slider-text-left">에너지 사용량</span>
+                        <span class="slider-text-right">온실가스 사용량</span>
+						<!-- 슬라이드 버튼 -->
+                        <div class="slider-button" id="slider-button"></div>
+                    </div>
+					<!-- 선택된 상태 -->
+                    <div class="Rectangle-9 active" style="top: 146px; left: 625px;">
+                        <span class="styled-text active-text">데이터</span>
+                    </div>
+
+					<!-- 선택되지 않은 상태 -->
+					<div class="Rectangle-9" style="top: 146px; left: 725px;">
+                        <span class="styled-text inactive-text">예측</span>
+                    </div>
+					<!-- 전기(MWh) 및 가스(천m³) 버튼 -->
+                    <div class="d-flex gap-2" id="button-container" style="margin-left: 20px;">
+                        <button id="button1" class="styled-button active">
+                            	전기(MWh)
+                        </button>
+                        <button id="button2" class="styled-button">
+                            	가스(천m³)
+                        </button>
+                    </div>
+					<!-- 내부 네모칸 -->
+					<div class="Rectangle-4 position-absolute d-flex"
+						style="top: 188px; left: 20px; right: 20px; bottom: 20px;">
+						<div
+							class="w-50 h-100 d-flex align-items-center justify-content-center"
+							style="overflow: hidden;">
+							<canvas class="mx-3 my-2" id="line-chart" height="280px" width="240px"></canvas>
+						</div>
+						<div class="w-50 h-100 d-flex align-items-center justify-content-center" style="overflow: hidden;">
+							<table class="table table-bordered" style="margin: 0px 4px; margin-right: 16px;">
+								<thead class="thst grid2">
+									<tr>
+										<th width="30px" height="45px" scope="col">년월</th>
+										<th width="60px" height="45px" scope="col">구분</th>
+										<th width="100px" height="45px" scope="col">전기 에너지 사용량<br>(tCO₂)
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr role="row" id="1" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row" rowspan="2">202402</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">대전시 평균</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">73,385</td>
+									</tr>
+									<tr role="row" id="2" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center; display: none;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row">202402</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">서구</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">117,683</td>
+									</tr>
+									<tr role="row" id="3" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row" rowspan="2">202403</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">대전시 평균</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">65,372</td>
+									</tr>
+									<tr role="row" id="4" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center; display: none;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row">202403</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">서구</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">106,037</td>
+									</tr>
+									<tr role="row" id="5" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row" rowspan="2">202404</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">대전시 평균</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">61,845</td>
+									</tr>
+									<tr role="row" id="6" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center; display: none;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row">202404</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">서구</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">103,082</td>
+									</tr>
+									<tr role="row" id="7" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row" rowspan="2">202405</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">대전시 평균</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">59,430</td>
+									</tr>
+									<tr role="row" id="8" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center; display: none;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row">202405</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">서구</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">101,096</td>
+									</tr>
+									<tr role="row" id="9" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row" rowspan="2">202406</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">대전시 평균</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">67,063</td>
+									</tr>
+									<tr role="row" id="10" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center; display: none;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row">202406</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">서구</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">113,572</td>
+									</tr>
+									<tr role="row" id="11" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row" rowspan="2">202407</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">대전시 평균</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">79,897</td>
+									</tr>
+									<tr role="row" id="12" tabindex="-1"
+										class="ui-widget-content jqgrow ui-row-ltr">
+										<td role="gridcell" style="text-align: center; display: none;"
+											aria-describedby="gridSeoul2_USE_YM" scope="row">202407</td>
+										<td role="gridcell" style="text-align: center;"
+											aria-describedby="gridSeoul2_SIG_NM" scope="row">서구</td>
+										<td role="gridcell" style="text-align: right;"
+											aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">132,521</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<!-- 사용자 섹션 -->
+				<div
+					class="third-rectangle d-flex justify-content-center align-items-center position-relative">
+				<!-- 사용자 주소 -->
+                <div class="Rectangle-10 d-flex align-items-center" style="top: 40px; left: 725px;">
+                    <!-- 아이콘 -->
+                    <img src="resources/icon/hotel-fill@3x.png" alt="Address Icon" class="address-icon">
+                    <!-- 텍스트 -->
+                    <span class="styled-text-7">주소</span>
+                    <!-- 말풍선 -->
+                    <c:if test="${sessionScope.login == null}">
+                    	<div class="tooltip-1" style="display: none;">${sessionScope.login.address}</div>
+                    </c:if>
+                    <c:if test="${sessionScope.login != null}">
+                    	<div class="tooltip-1">${sessionScope.login.address}</div>
+                    </c:if>
+                </div>
+					<!-- 아이콘과 텍스트 (외부 네모에 위치) -->
+					<div class="d-flex align-items-center justify-content-between position-absolute"
+						style="top: 20px; left: 24px; width:830px">
+						<div class="d-flex align-items-center">
+							<img src="resources/icon/footprint-fill@3x.png" class="Chart"
+								alt="Chart Icon"> <span class="text-mystyle-3 ms-3">
+								<c:if test="${sessionScope.login == null}">
+								<span class="text-mystyle-4 text-background" id="nonLoginId">사용자</span>
+								님의 에너지 사용량
+								</c:if>
+								<c:if test="${sessionScope.login != null}">
+								<span class="text-mystyle-4 text-background">${sessionScope.login.id}</span>
+								님의 에너지 사용량
+								</c:if>
+							</span>
+						</div>
+					</div>
+					<!-- 내부 네모칸 -->
+					<div class="Rectangle-4 position-absolute d-flex"
+						style="top: 86px; left: 20px; right: 20px; bottom: 20px;">
+						<!-- 내부 내용 추가 가능 -->
+						<div class="w-50 h-100 bg-green" style="text-align: center;">
+							<span style="display: block; margin-top: 20px; color: #020606 !important;">에너지 사용량</span>
+							<canvas class="my-2" id="doughnut-chart1" height="280px" width="240px" style="margin: 0px auto"></canvas>
+						</div>
+						<div class="w-50 h-100 bg-blue" style="text-align: center;">
+							<span style="display: block; margin-top: 20px; color: #020606 !important;">온실가스 배출량</span>
+							<canvas class="my-2" id="doughnut-chart2" height="280px" width="240px" style="margin: 0px auto"></canvas>
+						</div>
+						<!-- 블러 처리된 오버레이 -->
+						<c:if test="${sessionScope.login == null}">
+					    <div class="blur-overlay" id="blurOverlay">
+					        <div class="message-box">
+					            <p class="blur-message">우리 건물 에너지 사용량이 궁금하다면?</p>
+					            <button class="btn btn-login" onclick="redirectToLogin()">로그인 후 확인하기</button>
+					        </div>
+					    </div>
+					    </c:if>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer>
+		<p class="footer">© 2024 우주 최강팀 리제로</p>
+	</footer>
+
+	<script type="text/javascript">
+	mapView = document.getElementById('map-view');
+    backButton = document.getElementById('back-button');
+    let selectCode, year, sDate, eDate, selectGu;
+    
+    document.addEventListener("DOMContentLoaded", () => {
+    
+    lineChart = new Chart(document.getElementById("line-chart"), {
+	    type: 'line',
+	    data: {
+	        labels: [],
+	        datasets: [
+	            {
+	                data: [],
+	                label: "대전시 평균",
+	                borderColor: "#5aa5a7",
+	                fill: "start",
+	                backgroundColor: "rgba(90, 165, 167, 0.2)",
+	                pointHoverRadius: 7,  // hover 시 Point 크기 증가
+	                borderWidth: 4,  // 기본 선 두께
+	                hoverBorderWidth: 4  // 호버 시 선 두께
+	            },
+	            {
+	                data: [],
+	                label: "서구",
+	                borderColor: "#e871ae",
+	                fill: "start",
+	                backgroundColor: "rgba(255, 208, 232, 0.2)",
+                    pointHoverRadius: 7,  // hover 시 Point 크기 증가
+                    borderWidth: 4,  // 기본 선 두께
+                    hoverBorderWidth: 4,  // 호버 시 선 두께
+                    borderDash: [15, 5]
+	            }
+	        ]
+	    },
+	    options: {
+	    	responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+	        plugins: {
+	            legend: {
+	                display: true,
+	                labels: {
+	                	 usePointStyle: true,
+	                	 pointStyle: 'line',  // 'dash' 대신 'line' 사용
+	                     font: {
+	                         size: 16,
+	                     },
+	                     padding: 15,
+	                     generateLabels: (chart) => {
+	                         const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+	                         for (const key in labels) {
+	                             const target = Number(key);
+	                             if (target === 0) {
+	                                 labels[key].text = '대전시 평균';
+	                             } else if (target === 1) {
+	                                 labels[key].text = '서구';
+	                             }
+	                         }
+	                         return labels;
+	                     }
+	                }
+	            },
+	            tooltip: {
+	                borderWidth: 1,
+	                borderColor: '#eeeeee',
+	                backgroundColor: '#ffffff',
+	                padding: 10,
+	                bodySpacing: 10,
+	                titleColor: '#595959',
+	                usePointStyle: true,
+	                pointStyle: 'circle',
+	                boxPadding: 5,
+	                boxWidth: 10,
+	                boxHeight: 10,
+	                bodyColor: '#595959',
+	                font: {
+	                    size: 12
+	                },
+	                caretSize: 0,
+	                // 툴팁 내 레이블 색상 변경
+	                callbacks: {
+	                    labelColor: (tooltipItem) => {
+	                        if (tooltipItem.datasetIndex === 0) {
+	                            return {
+	                                borderColor: '#5aa5a7',
+	                                backgroundColor: '#5aa5a7'
+	                            };
+	                        }
+	                        if (tooltipItem.datasetIndex === 1) {
+	                            return {
+	                                borderColor: '#e871ae',
+	                                backgroundColor: '#e871ae'
+	                            };
+	                        }
+	                    },
+	                },
+	            	 // 툴팁 아이템 정렬 추가
+	                itemSort: (a, b) => b.raw - a.raw
+	            }
+	        },
+	        scales: {
+	            x: {
+	                ticks: {
+	                    font: {
+	                        size: 16
+	                    }
+	                }
+	            },
+	            y: {
+	                ticks: {
+	                    font: {
+	                        size: 16
+	                    }
+	                }
+	            }
+	        }
+	    }
+	});
+	
+	// 초기 데이터 로딩
+    const initializeData = () => {
+        // 서구 코드 설정
+        selectGu = '30170'; // 서구의 코드
+        
+        // 초기 연도 및 기간 설정 (2022년 하반기)
+        year = 2022;
+        sDate = 7;
+        eDate = 12;
+
+        // 초기 데이터 요청
+        const data = {
+            'code': selectGu,
+            'year': year,
+            'sdate': sDate,
+            'edate': eDate,
+            'dongyn': 'N'
+        };
+
+        $.ajax({
+            type: "post",
+            url: "/showEnergy",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            success: function(data) {
+                // 에너지 사용량 모드의 전기 데이터로 초기화
+                updateChartData(data, 'ele', '서구');
+            },
+            error: function(request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+    };
+
+    // 페이지 로드 시 초기 데이터 로딩 실행
+    initializeData();
+    
+    });
+	
+    function showDongMap(dongSvgFile) {
+        mapView.setAttribute('data', dongSvgFile);
+        backButton.style.display = 'block';
+    }
+
+    function showGuMap() {
+        mapView.setAttribute('data', 'resources/static/daejeon_map_gu_ref_ref.html');
+        selectCode = null;
+        backButton.style.display = 'none';
+    }
+    
+    function showGu(e){
+    	 let name = e.getAttribute('data-name');
+    	    code = e.getAttribute('id');
+    	    $('#region').text(name);
+    	    
+    	    selectGu = code;
+    	    
+    	    switch ($('#year').val()) {
+    	        case "1": year = 2022; sDate = 7; eDate = 12; break;
+    	        case "2": year = 2022; sDate = 1; eDate = 6; break;
+    	        case "3": year = 2021; sDate = 7; eDate = 12; break;
+    	        case "4": year = 2021; sDate = 1; eDate = 6; break;
+    	        case "5": year = 2020; sDate = 7; eDate = 12; break;
+    	        case "6": year = 2020; sDate = 1; eDate = 6; break;
+    	    }
+    	    
+    	    const isEnergyMode = document.getElementById("slider-button").style.left === "0px" || document.getElementById("slider-button").style.left === "";
+    	    const isElectricSelected = document.getElementById("button1").classList.contains("active");
+    	    const dataField = isEnergyMode ? 
+    	        (isElectricSelected ? 'ele' : 'gas') : 
+    	        (isElectricSelected ? 'eledsa' : 'gasdsa');
+
+    	    const data = {
+    	        'code': code,
+    	        'year': year,
+    	        'sdate': sDate,
+    	        'edate': eDate,
+    	        'dongyn': 'N'
+    	    };
+    	    
+    	    $.ajax({
+    	        type: "post",
+    	        url: "/showEnergy",
+    	        data: JSON.stringify(data),
+    	        contentType: 'application/json;',
+    	        success: function(data) {
+    	            updateChartData(data, dataField, name);
+    	        },
+    	        error: function(request, status, error) {
+    	            console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+    	        }
+    	    });
+    }
+    
+    function showDong(e){
+    	let name = e.getAttribute('data-name');
+    	code = e.getAttribute('id');
+    	
+    	svgDoc = mapView.contentDocument;
+    	
+         // id로 직접 찾기
+        element = svgDoc.getElementById(code); // '#' 없이 id만 사용
+        
+        if (selectCode){
+   	 		svgDoc.getElementById(selectCode).style.fill = '#7bc1c2';
+        }
+        
+        if (element) {
+            element.style.fill = '#286E71';
+        }
+        
+		$('#region').text(name);
+		
+		selectCode = code;
+		
+		 // 연도 및 기간 설정
+	    switch ($('#year').val()) {
+	        case "1": year = 2022; sDate = 7; eDate = 12; break;
+	        case "2": year = 2022; sDate = 1; eDate = 6; break;
+	        case "3": year = 2021; sDate = 7; eDate = 12; break;
+	        case "4": year = 2021; sDate = 1; eDate = 6; break;
+	        case "5": year = 2020; sDate = 7; eDate = 12; break;
+	        case "6": year = 2020; sDate = 1; eDate = 6; break;
+	    }
+		 
+		data={
+            	'code': selectCode,
+            	'year': year,
+            	'sdate': sDate,
+            	'edate': eDate,
+            	'dongyn': 'Y'
+             }
+		
+		 // 현재 선택된 모드와 버튼 상태 확인
+	    isEnergyMode = document.getElementById("slider-button").style.left === "0px" || document.getElementById("slider-button").style.left === "";
+	    isElectricSelected = document.getElementById("button1").classList.contains("active");
+		
+	    // 데이터 타입 결정
+	    let dataField;
+	    if (isEnergyMode) {
+	        dataField = isElectricSelected ? 'ele' : 'gas';
+	    } else {
+	        dataField = isElectricSelected ? 'eledsa' : 'gasdsa';
+	    }
+	    
+		$.ajax({
+            type: "post",
+            url: "/showEnergy",
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+            success: function (data) {
+            	updateChartData(data, dataField, name);
+            },
+            error: function (request, status, error) {
+                console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            }
+        })
+    }
+    
+ 	// 차트 데이터 업데이트를 위한 공통 함수
+    function updateChartData(data, dataField, name) {
+    	// 현재 선택된 모드와 단위 확인
+        const isEnergyMode = document.getElementById("slider-button").style.left === "0px" || document.getElementById("slider-button").style.left === "";
+        const isElectricSelected = document.getElementById("button1").classList.contains("active");
+    	const localData = data.guList || data.energyList;
+    	
+    	console.log(data.energyList);
+    	console.log(localData);
+    	console.log(data.daejeonList);
+    	 // 차트 데이터 업데이트
+        let chartDataLocal = localData.map(item => {
+		    if (isEnergyMode && isElectricSelected) {
+		        return item[dataField];  // 여기서 그냥 반환만 하고 있음
+		    }
+		    return item[dataField];      // 조건과 관계없이 같은 값 반환
+		});
+		
+		let chartDataDaejeon = data.daejeonList.map(item => {
+		    if (isEnergyMode && isElectricSelected) {
+		        return item[dataField];  // 여기서도 마찬가지
+		    }
+		    return item[dataField];      // 조건과 관계없이 같은 값 반환
+		});
+ 		
+        lineChart.data.labels = localData.map(item => item.year);
+        lineChart.data.datasets[1].label = name;
+        lineChart.data.datasets[1].data = chartDataLocal;
+        lineChart.data.datasets[0].data = chartDataDaejeon;
+        lineChart.data.datasets[0].label = "대전시 평균";
+        
+        // 차트 옵션 업데이트
+        lineChart.options.plugins.legend.labels.generateLabels = function(chart) {
+            const originalLabels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+            return originalLabels.map((label, index) => {
+                if (index === 0) {
+                    label.text = "대전시 평균";
+                } else {
+                    label.text = chart.data.datasets[index].label;
+                }
+                return label;
+            });
+        };
+        
+        lineChart.update();
+        
+     // 테이블 데이터 업데이트
+        const tableBody = document.querySelector('.table tbody');
+        let tableHTML = '';
+        
+        // 데이터 포맷팅 함수
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+    	
+        // 각 데이터 쌍(대전시 평균과 선택된 구)에 대해 행 생성
+        for (let i = 0; i < localData.length; i++) {
+        const localItem = localData[i];
+        const daejeonItem = data.daejeonList[i];
+        
+        tableHTML += '<tr role="row" id="' + (i*2+1) + '" tabindex="-1" class="ui-widget-content jqgrow ui-row-ltr">';
+        tableHTML += '<td role="gridcell" style="text-align: center;" aria-describedby="gridSeoul2_USE_YM" scope="row" rowspan="2">';
+        tableHTML += localItem.year;
+        tableHTML += '</td>';
+        tableHTML += '<td role="gridcell" style="text-align: center;" aria-describedby="gridSeoul2_SIG_NM" scope="row">';
+        tableHTML += '대전시 평균';
+        tableHTML += '</td>';
+        tableHTML += '<td role="gridcell" style="text-align: right;" aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">';
+        tableHTML += formatNumber(daejeonItem[dataField]);
+        tableHTML += '</td>';
+        tableHTML += '</tr>';
+        
+        tableHTML += '<tr role="row" id="' + (i*2+2) + '" tabindex="-1" class="ui-widget-content jqgrow ui-row-ltr">';
+        tableHTML += '<td role="gridcell" style="text-align: center; display: none;" aria-describedby="gridSeoul2_USE_YM" scope="row">';
+        tableHTML += localItem.year;
+        tableHTML += '</td>';
+        tableHTML += '<td role="gridcell" style="text-align: center;" aria-describedby="gridSeoul2_SIG_NM" scope="row">';
+        tableHTML += name;
+        tableHTML += '</td>';
+        tableHTML += '<td role="gridcell" style="text-align: right;" aria-describedby="gridSeoul2_POWER_ENERGY_USAGE" scope="row">';
+        tableHTML += formatNumber(localItem[dataField]);
+        tableHTML += '</td>';
+        tableHTML += '</tr>';
+    }
+        
+        // 테이블 내용 업데이트
+        tableBody.innerHTML = tableHTML;
+    }
+ 	
+    const weatherimg = document.getElementById('weatherIcon'); // 이미지 태그 참조
+    const weathertext = document.getElementById('weathertext'); // 텍스트를 표시할 태그 참조
+
+    async function getDaejeonWeather() {
+        const API_KEY = 'a578d834dcd6b007a5b9cbc7d32f51f3';
+        const BASE_URL = 'http://api.openweathermap.org/data/2.5/weather';
+        const city = 'Daejeon'; // 대전을 검색
+
+        const url = BASE_URL + '?q=' + city + '&appid=' + API_KEY + '&units=metric&lang=kr';
+        
+        console.log(url); // 요청 URL 확인
+        
+        try {
+            const response = await fetch(url); // API 호출
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json(); // JSON 데이터로 변환
+            console.log(data); // 데이터 출력
+            
+            // 날씨 텍스트 업데이트
+            weathertext.innerText = '대전의 현재 날씨는 ' + data.weather[0].description + ', 온도는 ' + data.main.temp + '°C입니다';
+            
+            // 날씨 아이콘 이미지의 URL 생성
+            const iconUrl = 'http://openweathermap.org/img/wn/' + data.weather[0].icon + '.png';
+            weatherimg.src = iconUrl; // 이미지 태그의 src 속성에 URL 할당
+
+        } catch (error) {
+            console.error('날씨 데이터를 가져오는 중 오류 발생:', error);
+            alert('날씨 데이터를 가져올 수 없습니다.');
+        }
+    }
+
+    // 페이지 로드 시 자동 호출
+    window.onload = getDaejeonWeather;
+    
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	
+</body>
+
+</html>

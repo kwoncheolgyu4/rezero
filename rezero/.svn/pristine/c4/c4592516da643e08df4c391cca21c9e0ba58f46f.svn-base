@@ -1,0 +1,8 @@
+package com.zero.re.use.vo;
+
+import lombok.Data;
+
+@Data
+public class GasVO {
+
+}

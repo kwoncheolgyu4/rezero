@@ -1,0 +1,13 @@
+package com.zero.re.use.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class UseController {
+	
+    @GetMapping("/carbon")
+    public String showExampleView() {
+        return "carbon";
+    }
+}

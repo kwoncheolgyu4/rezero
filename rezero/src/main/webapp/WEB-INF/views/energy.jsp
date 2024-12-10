@@ -1,0 +1,1068 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="../inc/header.jsp"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<title>우리 집 탄소 배출량 계산기</title>
+    <style>
+        .dynamic-box {
+            width: 1720px;
+            border-radius: 15px;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            background-color: #effafb;
+            box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .header-area {
+            width: 1400px;
+            height: 120px;
+            margin: 40px auto;
+            margin-top: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px dashed #9dc2c3 !important;
+        }
+
+        .header-icon img {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 2px;
+            /* 이미지 아래 여백을 음수로 만들어 위로 이동 */
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 20px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #325f60;
+        }
+
+        .header-subtitle {
+            font-size: 16px;
+            color: #699d9f;
+        }
+
+        .rounded-box {
+            max-width: 1400px;
+            border-radius: 15px;
+            background-color: #ffffff;
+            box-shadow: 1px 1px 0 0 #95c0c3;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-control-1 {
+            outline: none !important;
+            border: 2px solid #9dc2c3 !important;
+            background-color: #ffffff !important;
+            box-shadow: none !important;
+            color: #58A4A7 !important;
+            border-radius: 6px !important;
+            border: 2px solid #9dc2c3 !important;
+            height: 38px !important;
+            width: 250px;
+            font-size: 20px !important;
+            font-weight: 500 !important;
+            color: #417274 !important;
+            text-align: right;
+        }
+
+        .form-control-1:focus {
+            outline: none !important;
+            border: 2px solid #58A4A7 !important;
+            background-color: #ffffff !important;
+            box-shadow: none !important;
+            color: #417274 !important;
+            text-align: right;
+        }
+
+        .form-control-1::placeholder {
+            font-size: 20px !important;
+            color: #9dc2c3 !important;
+            font-weight: 500 !important;
+            text-align: right;
+            /* 플레이스홀더도 오른쪽 정렬 */
+        }
+
+        .small-select {
+            width: 250px;
+            /* 원하는 가로 길이 */
+        }
+
+        .form-spacing {
+            margin-left: 10px;
+            /* select와 input 사이 간격 조정 */
+        }
+
+        .form-spacing-1 {
+            margin-left: 60px;
+            /* select와 input 사이 간격 조정 */
+        }
+
+        .form-select {
+            border: 2px solid #9dc2c3 !important;
+            border-radius: 6px !important;
+            height: 39px !important;
+            background-color: #ffffff !important;
+            margin-top: 2px;
+            color: #417274 !important;
+        }
+
+        .form-select:focus {
+            outline: none !important;
+            border: 2px solid #58A4A7 !important;
+            box-shadow: none !important;
+        }
+
+        .carbon-text {
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            color: #417274 !important;
+            white-space: nowrap;
+            /* 텍스트 줄바꿈 방지 */
+        }
+
+        .carbon-text-2 {
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            color: #eff6f6 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .carbon-text-3 {
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            color: #325f60 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .carbon-text-4 {
+            font-size: 24px !important;
+            font-weight: 500 !important;
+            color: #417274 !important;
+        }
+
+        .carbon-text-5 {
+            font-size: 42px !important;
+            font-weight: 600 !important;
+            color: #417274 !important;
+        }
+
+        .carbon-box {
+            border-radius: 6px;
+            /* 모서리 둥글게 */
+            height: 36px;
+            /* 높이 설정 (label 포함) */
+            width: 200px;
+            /* 너비 설정 */
+            display: flex;
+            /* 내부 정렬을 위한 flexbox */
+            align-items: center;
+            /* 수직 중앙 정렬 */
+            justify-content: center;
+            /* 수평 중앙 정렬 */
+            padding: 5px;
+            /* 내부 여백 */
+            background-color: #3e7b7d;
+            /* 배경색 */
+            white-space: nowrap;
+            /* 텍스트 줄바꿈 방지 */
+        }
+
+        .carbon-box-1 {
+            border-radius: 6px;
+            /* 모서리 둥글게 */
+            height: 36px;
+            /* 높이 설정 (label 포함) */
+            width: 200px;
+            /* 너비 설정 */
+            display: flex;
+            /* 내부 정렬을 위한 flexbox */
+            align-items: center;
+            /* 수직 중앙 정렬 */
+            justify-content: center;
+            /* 수평 중앙 정렬 */
+            padding: 5px;
+            /* 내부 여백 */
+            background-color: #dbe9e9;
+            /* 배경색 */
+            white-space: nowrap;
+            /* 텍스트 줄바꿈 방지 */
+            margin: 0 auto;
+        }
+
+        .carbon-btn {
+            border-radius: 6px;
+            /* 모서리 둥글게 */
+            height: 36px;
+            /* 높이 설정 (label 포함) */
+            width: 200px;
+            /* 너비 설정 */
+            display: flex;
+            /* 내부 정렬을 위한 flexbox */
+            align-items: center;
+            /* 수직 중앙 정렬 */
+            justify-content: center;
+            /* 수평 중앙 정렬 */
+            padding: 5px;
+            /* 내부 여백 */
+            background-color: #e785b8;
+            /* 배경색 */
+            white-space: nowrap;
+            /* 텍스트 줄바꿈 방지 */
+            border: none !important;
+            color: #ffffff;
+            box-shadow: inset 0 -2px 1px 0 #cd689c !important;
+            transition: all 0.3s ease;
+            /* 모든 변화에 부드러운 효과 */
+        }
+
+        .carbon-btn-2 {
+            border-radius: 6px;
+            /* 모서리 둥글게 */
+            height: 36px;
+            /* 높이 설정 (label 포함) */
+            width: 200px;
+            /* 너비 설정 */
+            display: flex;
+            /* 내부 정렬을 위한 flexbox */
+            align-items: center;
+            /* 수직 중앙 정렬 */
+            justify-content: center;
+            /* 수평 중앙 정렬 */
+            padding: 5px;
+            /* 내부 여백 */
+            white-space: nowrap;
+            /* 텍스트 줄바꿈 방지 */
+            color: #55787a;
+            background-color: #FFFFFF;
+            /* 배경색 */
+            border: 2px solid #9dc2c3 !important;
+            transition: all 0.3s ease;
+            /* 모든 변화에 부드러운 효과 */
+        }
+
+        .carbon-btn-3 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* 텍스트를 수평 및 수직으로 중앙 정렬 */
+            height: 36px;
+            width: 200px;
+            border-radius: 6px;
+            padding: 5px;
+            background-color: #cfebec;
+            white-space: nowrap;
+            margin: 0;
+            box-shadow: inset 0 -2px 1px 0 #b1dbdd !important;
+            transition: all 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .carbon-text-6 {
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            color: #050A09 !important;
+            margin: 0 !important;
+            /* 기본 마진 제거 */
+            padding: 0 !important;
+            /* 기본 패딩 제거 */
+        }
+
+        .carbon-btn:hover {
+            background-color: #cd689c !important;
+            /* 수정 버튼 호버 배경색 */
+        }
+
+        .carbon-btn-2:hover {
+            background-color: #e7f3f3 !important;
+            /* 수정 버튼 호버 배경색 */
+        }
+
+        .carbon-btn-3:hover {
+            background-color: #b1dbdd !important;
+            /* 수정 버튼 호버 배경색 */
+        }
+
+        .tree-icon {
+            width: 80px;
+            /* 아이콘 너비 */
+            height: auto;
+            /* 비율 유지 */
+            margin-bottom: 10px;
+            /* 텍스트와 여백 */
+        }
+
+        .result-icon {
+            width: 130px;
+            /* 아이콘 너비 */
+            height: auto;
+            /* 비율 유지 */
+            margin-bottom: 15px;
+            /* 텍스트와 여백 */
+        }
+
+        .source-container {
+            font-size: 14px;
+            /* 텍스트 크기 */
+            color: #6c757d;
+            /* 회색 계열 색상 */
+            margin-top: 10px;
+            /* 상단 여백 */
+            margin-bottom: 10px;
+            /* 하단 여백 */
+            margin-left: 180px;
+            text-align: left;
+            /* 텍스트 왼쪽 정렬 */
+            line-height: 1.5;
+            /* 줄 간격 */
+        }
+
+        .carbon-btn-container {
+            display: flex;
+            gap: 10px;
+            /* 버튼 간 간격 */
+            justify-content: center;
+            /* 부모 컨테이너에서 버튼 중앙 정렬 */
+        }
+
+        .energy-line {
+            border-bottom: 3px dashed #9dc2c3 !important;
+            padding: 6px;
+            width: 99%;
+            /* 부모 너비의 90% */
+            margin: 20px auto;
+            /* 수평 중앙 정렬 */
+        }
+        
+        #renewableForm{
+        	box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+
+	<!-- Layout -->
+	
+    <div class="mb-5 d-flex justify-content-center">
+        <div class="dynamic-box">
+
+            <div class="header-area">
+                <div class="d-flex align-items-center">
+                    <div class="header-icon">
+                        <img src="resources/icon/plug-2-line@3x.png" alt="plantIcon">
+                    </div>
+                    <div class="header-text">
+                        <div class="header-title">에너지 절약 방법</div>
+                        <div class="header-subtitle">에너지 절약방법 서비스입니다.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-box mt-2 mb-5 mx-auto p-4">
+                <div class="carbon-btn-container mb-5 mt-3">
+                    <div class="carbon-btn-3" onclick="showForm('electricity')">
+                        <label class="carbon-text-6">전기절약</label>
+                    </div>
+                    <div class="carbon-btn-3" onclick="showForm('renewable')">
+                        <label class="carbon-text-6">신재생</label>
+                    </div>
+                </div>
+                <!-- 전기 폼 -->
+                <div id="electricityForm">
+                    <form style="margin-top: 20px; margin-bottom: 20px;">
+                        <div class="header-title" style="text-align: left; margin-left: 30px; padding-bottom: 20px;">플러그뽑기</div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="TVHours" class="col-form-label carbon-text-2">TV</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="TVHours" class="form-control-1 me-2" placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="TVDays" class="form-control-1 ms-3 me-2 form-spacing"
+                                        placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="SettopBoxHours" class="col-form-label carbon-text-2">세탑박스</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="SettopBoxHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="SettopBoxDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="InverterStandHours" class="col-form-label carbon-text-2">인버터스탠드</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="InverterStandHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="InverterStandDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="ComputerHours" class="col-form-label carbon-text-2">컴퓨터</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="ComputerHours" class="form-control-1 me-2" placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="ComputerDays" class="form-control-1 ms-3 me-2 form-spacing"
+                                        placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="InternetModemHours" class="col-form-label carbon-text-2">인터넷모뎀</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="InternetModemHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="InternetModemDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="InternetPhoneHours" class="col-form-label carbon-text-2">인터넷전화기</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="InternetPhoneHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="InternetPhoneDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="VideoPlayerHours" class="col-form-label carbon-text-2">비디오</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="VideoPlayerHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="VideoPlayerDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="DVDPlayerHours" class="col-form-label carbon-text-2">DVD</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="DVDPlayerHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="DVDPlayerDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="AudioSpeakerHours" class="col-form-label carbon-text-2">오디오스피커</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="AudioSpeakerHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="AudioSpeakerDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="AudioComponentHours" class="col-form-label carbon-text-2">오디오(컴포넌트)</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="AudioComponentHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="AudioComponentDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="WirelessRouterHours" class="col-form-label carbon-text-2">유무선 공유기</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="WirelessRouterHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="WirelessRouterDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="DigitalPianoHours" class="col-form-label carbon-text-2">전자피아노</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="DigitalPianoHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="DigitalPianoDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="PrinterHours" class="col-form-label carbon-text-2">프린터</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="PrinterHours" class="form-control-1 me-2" placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="PrinterDays" class="form-control-1 ms-3 me-2 form-spacing"
+                                        placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="HomeTheaterHours" class="col-form-label carbon-text-2">홈시어터</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="HomeTheaterHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="HomeTheaterDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="AirConditionerHours" class="col-form-label carbon-text-2">에어컨(스탠드형)</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="AirConditionerHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="AirConditionerDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="FanHours" class="col-form-label carbon-text-2">선풍기</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="FanHours" class="form-control-1 me-2" placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="FanDays" class="form-control-1 ms-3 me-2 form-spacing"
+                                        placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="ElectricMattressHours" class="col-form-label carbon-text-2">전기매트(장판)</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="ElectricMattressHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="ElectricMattressDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="RiceCookerHours" class="col-form-label carbon-text-2">전기밥솥</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="RiceCookerHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="RiceCookerDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="MicrowaveOvenHours" class="col-form-label carbon-text-2">전자레인지</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="MicrowaveOvenHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="MicrowaveOvenDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="BoilerHours" class="col-form-label carbon-text-2">보일러</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="BoilerHours" class="form-control-1 me-2" placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="BoilerDays" class="form-control-1 ms-3 me-2 form-spacing"
+                                        placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="PhoneChargerHours" class="col-form-label carbon-text-2">휴대폰충전기</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="PhoneChargerHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="PhoneChargerDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="CameraChargerHours" class="col-form-label carbon-text-2">카메라충전기</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="CameraChargerHours" class="form-control-1 me-2"
+                                        placeholder="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="CameraChargerDays"
+                                        class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="energy-line"></div>
+
+                        <div class="header-title" style="text-align: left; margin-left: 30px; padding-bottom: 20px;">
+                            조명차단
+                        </div>
+                        <div class="mb-5 row align-items-center">
+                            <div class="carbon-box" style="margin-left: 40px;">
+                                <label for="gasInput" class="col-form-label carbon-text-2">LED조명</label>
+                            </div>
+                            <div class="col-sm-4 form-spacing">
+                                <div class="d-flex align-items-center">
+                                    <input type="number" id="lightPower" class="form-control-1 me-2" placeholder="0"
+                                        min="0">
+                                    <div class="carbon-text">W</div>
+                                    <input type="number" id="lightHours" class="form-control-1 ms-3 me-2 form-spacing"
+                                        placeholder="0" min="0">
+                                    <div class="carbon-text">시간</div>
+                                    <input type="number" id="lightDays" class="form-control-1 ms-3 me-2 form-spacing"
+                                        placeholder="0" min="0">
+                                    <div class="carbon-text">일</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2" style="margin-right: 26px;">
+                            <button type="button" class="carbon-btn" onclick="calculateCarbon()">계산하기</button>
+                            <button type="button" class="carbon-btn-2" onclick="resetCalculator()">초기화</button>
+                        </div>
+                    </form>
+                </div>
+            	<!-- 신재생 폼 -->
+	            <div id="renewableForm" class="rounded-box mt-2 mb-5 mx-auto p-4" style="display: none;">
+	
+	                <form>
+	                    <div class="mb-3 mt-4 row align-items-center">
+	                        <div class="carbon-box" style="margin-left: 40px;">
+	                            <label for="solar" class="col-form-label carbon-text-2">태양광</label>
+	                        </div>
+	                        <div class="col-sm-4 form-spacing">
+	                            <div class="d-flex align-items-center">
+	                                <input type="number" id="solar" class="form-control-1 me-2" placeholder="0">
+	                                <div class="carbon-text">kW</div>
+	                            </div>
+	                        </div>
+	                    </div>
+	
+	                    <div class="mb-3 row align-items-center">
+	                        <div class="carbon-box" style="margin-left: 40px;">
+	                            <label for="wind" class="col-form-label carbon-text-2">풍력</label>
+	                        </div>
+	                        <div class="col-sm-4 form-spacing">
+	                            <div class="d-flex align-items-center">
+	                                <input type="number" id="wind" class="form-control-1 me-2" placeholder="0">
+	                                <div class="carbon-text">kW</div>
+	                            </div>
+	                        </div>
+	                    </div>
+	
+	                    <div class="d-flex justify-content-end gap-2" style="margin-right: 26px;">
+	                        <button type="button" class="carbon-btn" onclick="calculateRenewable()">계산하기</button>
+	                        <button type="button" class="carbon-btn-2" onclick="resetCalculator()">초기화</button>
+	                    </div>
+	                </form>
+	            </div>
+            </div>
+            <!-- 계산 결과창 -->
+            <div id="electricityResults" class="rounded-box mt-2 mb-5 mx-auto p-4" style="display: block;">
+                <div class="row text-center">
+                    <div class="col border-end">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">감축된 전력량</div>
+                        </div>
+                        <img src="resources/icon/elec.png" alt="CO2 Icon" class="result-icon mt-3">
+                        <div class="result-value carbon-text-4">
+                            <span id="reducedElectricity" class="carbon-text-5"
+                                style="color: #d1522b !important;">0</span> kWh
+                        </div>
+                    </div>
+                    <div class="col border-end">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">배출량 결과</div>
+                        </div>
+                        <img src="resources/icon/co2_1.png" alt="CO2 Icon" class="result-icon mt-3">
+                        <div class="result-value carbon-text-4">
+                            <span id="reducedCarbon" class="carbon-text-5" style="color: #0e53d0 !important;">0</span>
+                            kgCO₂
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">중부지방 소나무</div>
+                        </div>
+                        <img src="resources/icon/tree.png" alt="Tree Icon" class="tree-icon mt-3">
+                        <div class="result-value carbon-text-4">
+                            <span id="treeCount" class="carbon-text-5" style="color: #1F8A70 !important;">0</span> 그루
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 신재생 결과 -->
+            <div id="renewableResults" class="rounded-box mt-2 mb-5 mx-auto p-4" style="display: none;">
+                <div class="row text-center">
+                    <!-- 첫 번째 영역: 감축량 결과 -->
+                    <div class="col border-end">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">감축량 결과</div>
+                        </div>
+                        <img src="resources/icon/co2_1.png" alt="CO2 Icon" class="result-icon mt-3">
+                        <div class="result-value carbon-text-4">
+                            <span id="renewableReduction" class="carbon-text-5"
+                                style="color: #0e53d0 !important;">0</span> kgCO₂
+                        </div>
+                    </div>
+
+                    <!-- 두 번째 영역: 중부지방 소나무 -->
+                    <div class="col border-end">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">중부지방 소나무</div>
+                        </div>
+                        <img src="resources/icon/tree.png" alt="Tree Icon" class="tree-icon mt-3">
+                        <div class="result-value carbon-text-4">
+                            <span id="renewableTreeCount" class="carbon-text-5"
+                                style="color: #1F8A70 !important;">0</span> 그루
+                        </div>
+                    </div>
+
+                    <!-- 세 번째 영역: 태양광 및 풍력 사용량 -->
+                    <div class="col">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">계산 결과</div>
+                        </div>
+                        <table class="table table-borderless mt-5">
+                            <tbody>
+                                <td colspan="3" style="height: 30px;"></td> <!-- 간격 행 -->
+                                <!-- 태양광 -->
+                                <tr>
+                                    <td class="result-title carbon-text-3">태양광</td>
+                                    <td class="result-value carbon-text-3">
+                                        <span id="solarUsage" class="result-number">0</span>
+                                        <span class="result-unit">kW</span>
+                                    </td>
+                                    <td class="result-co2 carbon-text-3">
+                                        <span id="solarCO2" class="result-number">0</span>
+                                        <span class="result-unit">kgCO₂</span>
+                                    </td>
+                                </tr>
+                                <td colspan="3" style="height: 30px;"></td> <!-- 간격 행 -->
+                                <!-- 풍력 -->
+                                <tr>
+                                    <td class="result-title carbon-text-3">풍력</td>
+                                    <td class="result-value carbon-text-3">
+                                        <span id="windUsage" class="result-number">0</span>
+                                        <span class="result-unit">kW</span>
+                                    </td>
+                                    <td class="result-co2 carbon-text-3">
+                                        <span id="windCO2" class="result-number">0</span>
+                                        <span class="result-unit">kgCO₂</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+      <div class="source-container">
+                ※ 출처 : 지자체 온실가스 감축사업별 감축원단위 적용 가이드라인(한국환경공단, 2023년), 주요 산림수종의 표준 탄소흡수량(국립산림과학원, 2019년)
+      </div>
+        </div>
+    </div>
+	<!-- Footer -->
+	<footer>
+		<p class="footer">© 2024 우주 최강팀 리제로</p>
+	</footer>
+	
+	<script>
+        function showForm(type) {
+            // 모든 폼과 결과 숨기기
+            document.getElementById("electricityForm").style.display = "none";
+            document.getElementById("renewableForm").style.display = "none";
+            document.getElementById("electricityResults").style.display = "none";
+            document.getElementById("renewableResults").style.display = "none";
+
+            // 선택된 폼과 결과 표시
+            if (type === "electricity") {
+                document.getElementById("electricityForm").style.display = "block";
+                document.getElementById("electricityResults").style.display = "block";
+            } else if (type === "renewable") {
+                document.getElementById("renewableForm").style.display = "block";
+                document.getElementById("renewableResults").style.display = "block";
+            }
+        }
+
+        function calculateCarbon() {
+            const devices = {
+                "TV": 1.27,
+                "SettopBox": 12.27,
+                "InverterStand": 0.6,
+                "Computer": 2.62,
+                "InternetModem": 5.95,
+                "InternetPhone": 0.2,
+                "VideoPlayer": 4.93,
+                "DVDPlayer": 3.72,
+                "AudioSpeaker": 5.6,
+                "AudioComponent": 4.42,
+                "WirelessRouter": 4.03,
+                "DigitalPiano": 0.48,
+                "Printer": 2.61,
+                "HomeTheater": 5.1,
+                "AirConditioner": 5.81,
+                "Fan": 0.22,
+                "ElectricMattress": 0.59,
+                "RiceCooker": 3.47,
+                "MicrowaveOven": 2.19,
+                "Boiler": 5.81,
+                "PhoneCharger": 0.26,
+                "CameraCharger": 0.22
+            };
+
+            const emissionFactor = 0.4777; // kgCO₂ per kWh
+            const treeFactor = 121.4;     // 소나무 흡수량 (kgCO₂)
+
+            let totalElectricity = 0; // 초기화
+
+            // 플러그뽑기 계산
+            for (const device in devices) {
+                const power = devices[device]; // 소비 전력 (W)
+                const hours = parseFloat(document.getElementById(device+'Hours')?.value) || 0; // 시간 입력값
+                const days = parseFloat(document.getElementById(device+'Days')?.value) || 0; // 일 입력값
+                totalElectricity += power * hours * days * 0.001; // W -> kWh 변환
+            }
+
+            // 조명 입력값 계산 추가
+            const lightPower = parseFloat(document.getElementById("lightPower")?.value) || 0; // 전력 (W)
+            const lightHours = parseFloat(document.getElementById("lightHours")?.value) || 0; // 시간
+            const lightDays = parseFloat(document.getElementById("lightDays")?.value) || 0;   // 일
+            totalElectricity += lightPower * lightHours * lightDays * 0.001; // W -> kWh 변환
+
+            // CO₂ 배출량 계산 (kgCO₂)
+            const totalCarbonReduction = Math.round(totalElectricity * emissionFactor * 1000) / 1000; // 3자리 유지
+
+            // 소나무 흡수량 계산 (그루)
+            const totalTrees = parseFloat((totalCarbonReduction / treeFactor).toFixed(3)); // 소수점 3자리 유지
+
+            // 소수점 뒤 불필요한 0 제거
+            const formatNumber = (num) => {
+                return num % 1 === 0 ? num.toString() : num.toFixed(3).replace(/\.?0+$/, "");
+            };
+
+            // 결과값 업데이트
+            document.getElementById("reducedElectricity").innerText = formatNumber(totalElectricity); // kWh
+            document.getElementById("reducedCarbon").innerText = formatNumber(totalCarbonReduction); // kgCO₂
+            document.getElementById("treeCount").innerText = formatNumber(totalTrees); // 그루
+
+            // 결과창 표시
+            document.getElementById("electricityResults").style.display = "block";
+        }
+
+        function resetCalculator() {
+            // 모든 입력값 초기화
+            const inputs = document.querySelectorAll("input");
+            inputs.forEach((input) => (input.value = ""));
+
+            // 결과값 초기화
+            document.getElementById("reducedElectricity").innerText = "0";
+            document.getElementById("reducedCarbon").innerText = "0";
+            document.getElementById("treeCount").innerText = "0";
+
+            document.getElementById("renewableReduction").innerText = "0";
+            document.getElementById("renewableTreeCount").innerText = "0";
+
+            document.getElementById("solarUsage").innerText = "0";
+            document.getElementById("solarCO2").innerText = "0";
+            document.getElementById("windUsage").innerText = "0";
+            document.getElementById("windCO2").innerText = "0";
+
+            document.getElementById("solarTreeCount").innerText = "0";
+            document.getElementById("windTreeCount").innerText = "0";
+        }
+        // 신재생 에너지 계산 함수
+        function calculateRenewable() {
+            const solarKW = parseFloat(document.getElementById("solar").value) || 0; // 태양광 입력값
+            const windKW = parseFloat(document.getElementById("wind").value) || 0;  // 풍력 입력값
+
+            // 감축 계수 (kgCO₂ per kW)
+            const solarReduction = 616.818; // 태양광 감축량
+            const windReduction = 949.916; // 풍력 감축량
+
+            // 소나무 1kW 당 흡수량
+            const solarTreeFactor = 4.824; // 태양광 -> 소나무
+            const windTreeFactor = 7.428;  // 풍력 -> 소나무
+
+            // 감축량 계산
+            const solarCO2 = solarKW * solarReduction; // 태양광 CO₂ 감축량
+            const windCO2 = windKW * windReduction;   // 풍력 CO₂ 감축량
+            const totalReduction = solarCO2 + windCO2; // 총 감축량
+
+            // 소나무 개수 계산
+            const solarTrees = solarKW * solarTreeFactor; // 태양광 -> 소나무
+            const windTrees = windKW * windTreeFactor;   // 풍력 -> 소나무
+            const totalTrees = solarTrees + windTrees;  // 총 소나무
+
+            // 소수점 뒤 불필요한 0 제거
+            const formatNumber = (num) => {
+                return num % 1 === 0 ? num.toString() : num.toFixed(3).replace(/\.?0+$/, "");
+            };
+
+            // 결과 업데이트
+            document.getElementById("renewableReduction").innerText = formatNumber(totalReduction); // 총 CO₂ 감축량
+            document.getElementById("renewableTreeCount").innerText = formatNumber(totalTrees);     // 총 소나무 수
+
+            document.getElementById("solarUsage").innerText = formatNumber(solarKW); // 태양광 사용량
+            document.getElementById("solarCO2").innerText = formatNumber(solarCO2); // 태양광 CO₂ 감축량
+            document.getElementById("windUsage").innerText = formatNumber(windKW);  // 풍력 사용량
+            document.getElementById("windCO2").innerText = formatNumber(windCO2);  // 풍력 CO₂ 감축량
+
+            // 태양광과 풍력 소나무 개별 값 표시
+            document.getElementById("solarTreeCount").innerText = formatNumber(solarTrees); // 태양광 소나무
+            document.getElementById("windTreeCount").innerText = formatNumber(windTrees);  // 풍력 소나무
+        }
+
+    </script>
+
+</body>
+</html>
+
+
+
+

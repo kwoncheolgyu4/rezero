@@ -1,0 +1,14 @@
+package com.zero.re.member.dao;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.zero.re.member.vo.MemberVO;
+
+@Mapper
+public interface IMemberDAO {
+	public MemberVO memLogin(MemberVO vo);
+	
+	public void memRegist(MemberVO vo);
+	
+	public int idCheck(String id);
+}

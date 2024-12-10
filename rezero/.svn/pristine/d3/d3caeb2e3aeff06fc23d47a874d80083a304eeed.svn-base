@@ -1,0 +1,18 @@
+package com.zero.re.energy.vo;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class ListVO {
+	private List<EnergyVO> energyList;
+    private List<EnergyVO> daejeonList;
+    private List<EnergyVO> guList;
+    
+    public ListVO(List<EnergyVO> energyList, List<EnergyVO> daejeonList, List<EnergyVO> guList) {
+        this.energyList = energyList;
+        this.daejeonList = daejeonList;
+        this.guList = guList;
+    }
+}

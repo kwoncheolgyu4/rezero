@@ -1,0 +1,8 @@
+package com.zero.re.use.dao;
+
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface IEnergyDAO {
+
+}

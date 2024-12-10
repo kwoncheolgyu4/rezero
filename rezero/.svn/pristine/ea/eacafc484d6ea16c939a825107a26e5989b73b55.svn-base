@@ -1,0 +1,564 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="../inc/header.jsp"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<title>우리 집 탄소 배출량 계산기</title>
+<style>
+   .dynamic-box {
+       width: 1720px;
+       border-radius: 15px;
+       margin-top: 60px;
+       margin-bottom: 60px;
+       background-color: #effafb;
+       box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+   }
+
+   .header-area {
+       width: 1400px;
+       height: 120px;
+       margin: 40px auto;
+       margin-top: 20px;
+       padding: 20px;
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       border-bottom: 3px dashed #9dc2c3 !important;
+   }
+
+   .header-icon img {
+       width: 48px;
+       height: 48px;
+       margin-bottom: 2px;
+       /* 이미지 아래 여백을 음수로 만들어 위로 이동 */
+   }
+
+   .header-text {
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+       margin-left: 20px;
+   }
+
+   .header-title {
+       font-size: 24px;
+       font-weight: bold;
+       color: #325f60;
+   }
+
+   .header-subtitle {
+       font-size: 16px;
+       color: #699d9f;
+   }
+
+   .rounded-box {
+       max-width: 1400px;
+       border-radius: 15px;
+       background-color: #ffffff;
+       box-shadow: 1px 1px 0 0 #95c0c3;
+       padding: 20px;
+       text-align: center;
+   }
+
+   .form-control-1 {
+       outline: none !important;
+       border: 2px solid #9dc2c3 !important;
+       background-color: #ffffff !important;
+       box-shadow: none !important;
+       color: #58A4A7 !important;
+       border-radius: 6px !important;
+       border: 2px solid #9dc2c3 !important;
+       height: 38px !important;
+       width: 250px;
+       font-size: 20px !important;
+       font-weight: 500 !important;
+       color: #417274 !important;
+       text-align: right;
+   }
+
+   .form-control-1:focus {
+       outline: none !important;
+       border: 2px solid #58A4A7 !important;
+       background-color: #ffffff !important;
+       box-shadow: none !important;
+       color: #417274 !important;
+       text-align: right;
+   }
+
+   .form-control-1::placeholder {
+       font-size: 20px !important;
+       color: #9dc2c3 !important;
+       font-weight: 500 !important;
+       text-align: right;
+       /* 플레이스홀더도 오른쪽 정렬 */
+   }
+
+   .small-select {
+       width: 250px;
+       /* 원하는 가로 길이 */
+   }
+
+   .form-spacing {
+       margin-left: 10px;
+       /* select와 input 사이 간격 조정 */
+   }
+
+   .form-spacing-1 {
+       margin-left: 60px;
+       /* select와 input 사이 간격 조정 */
+   }
+
+   .form-select {
+       border: 2px solid #9dc2c3 !important;
+       border-radius: 6px !important;
+       height: 39px !important;
+       background-color: #ffffff !important;
+       margin-top: 2px;
+       color: #417274 !important;
+   }
+
+   .form-select:focus {
+       outline: none !important;
+       border: 2px solid #58A4A7 !important;
+       box-shadow: none !important;
+   }
+
+   .carbon-text {
+       font-size: 16px !important;
+       font-weight: 500 !important;
+       color: #417274 !important;
+   }
+
+   .carbon-text-2 {
+       font-size: 18px !important;
+       font-weight: 600 !important;
+       color: #eff6f6 !important;
+       margin: 0 !important;
+       /* 기본 마진 제거 */
+       padding: 0 !important;
+       /* 기본 패딩 제거 */
+   }
+
+   .carbon-text-3 {
+       font-size: 18px !important;
+       font-weight: 600 !important;
+       color: #325f60 !important;
+       margin: 0 !important;
+       /* 기본 마진 제거 */
+       padding: 0 !important;
+       /* 기본 패딩 제거 */
+   }
+
+   .carbon-text-4 {
+       font-size: 24px !important;
+       font-weight: 500 !important;
+       color: #417274 !important;
+   }
+
+   .carbon-text-5 {
+       font-size: 42px !important;
+       font-weight: 600 !important;
+       color: #417274 !important;
+   }
+
+   .carbon-box {
+       border-radius: 6px;
+       /* 모서리 둥글게 */
+       height: 36px;
+       /* 높이 설정 (label 포함) */
+       width: 200px;
+       /* 너비 설정 */
+       display: flex;
+       /* 내부 정렬을 위한 flexbox */
+       align-items: center;
+       /* 수직 중앙 정렬 */
+       justify-content: center;
+       /* 수평 중앙 정렬 */
+       padding: 5px;
+       /* 내부 여백 */
+       background-color: #3e7b7d;
+       /* 배경색 */
+       white-space: nowrap;
+       /* 텍스트 줄바꿈 방지 */
+   }
+
+   .carbon-box-1 {
+       border-radius: 6px;
+       /* 모서리 둥글게 */
+       height: 36px;
+       /* 높이 설정 (label 포함) */
+       width: 200px;
+       /* 너비 설정 */
+       display: flex;
+       /* 내부 정렬을 위한 flexbox */
+       align-items: center;
+       /* 수직 중앙 정렬 */
+       justify-content: center;
+       /* 수평 중앙 정렬 */
+       padding: 5px;
+       /* 내부 여백 */
+       background-color: #dbe9e9;
+       /* 배경색 */
+       white-space: nowrap;
+       /* 텍스트 줄바꿈 방지 */
+       margin: 0 auto;
+   }
+
+   .carbon-btn {
+       border-radius: 6px;
+       /* 모서리 둥글게 */
+       height: 36px;
+       /* 높이 설정 (label 포함) */
+       width: 200px;
+       /* 너비 설정 */
+       display: flex;
+       /* 내부 정렬을 위한 flexbox */
+       align-items: center;
+       /* 수직 중앙 정렬 */
+       justify-content: center;
+       /* 수평 중앙 정렬 */
+       padding: 5px;
+       /* 내부 여백 */
+       background-color: #e179ae;
+       /* 배경색 */
+       white-space: nowrap;
+       /* 텍스트 줄바꿈 방지 */
+       border: none !important;
+       color: #ffffff;
+       box-shadow: inset 0 -2px 1px 0 #cd689c !important;
+       transition: all 0.3s ease;
+       /* 모든 변화에 부드러운 효과 */
+   }
+
+   .carbon-btn-2 {
+       border-radius: 6px;
+       /* 모서리 둥글게 */
+       height: 36px;
+       /* 높이 설정 (label 포함) */
+       width: 200px;
+       /* 너비 설정 */
+       display: flex;
+       /* 내부 정렬을 위한 flexbox */
+       align-items: center;
+       /* 수직 중앙 정렬 */
+       justify-content: center;
+       /* 수평 중앙 정렬 */
+       padding: 5px;
+       /* 내부 여백 */
+       white-space: nowrap;
+       /* 텍스트 줄바꿈 방지 */
+       color: #55787a;
+       background-color: #FFFFFF;
+       /* 배경색 */
+       border: 2px solid #9dc2c3 !important;
+       transition: all 0.3s ease;
+       /* 모든 변화에 부드러운 효과 */
+   }
+
+   .carbon-btn:hover {
+       background-color: #cd689c !important;
+       /* 수정 버튼 호버 배경색 */
+   }
+
+   .carbon-btn-2:hover {
+       background-color: #e7f3f3 !important;
+       /* 수정 버튼 호버 배경색 */
+   }
+
+   .tree-icon {
+       width: 80px;
+       /* 아이콘 너비 */
+       height: auto;
+       /* 비율 유지 */
+       margin-bottom: 10px;
+       /* 텍스트와 여백 */
+   }
+
+   .result-icon {
+       width: 130px;
+       /* 아이콘 너비 */
+       height: auto;
+       /* 비율 유지 */
+       margin-bottom: 15px;
+       /* 텍스트와 여백 */
+   }
+
+   .source-container {
+       font-size: 14px;
+       /* 텍스트 크기 */
+       color: #6c757d;
+       /* 회색 계열 색상 */
+       margin-top: 10px;
+       /* 상단 여백 */
+       margin-bottom: 10px;
+       /* 하단 여백 */
+       margin-left: 180px;
+       text-align: left;
+       /* 텍스트 왼쪽 정렬 */
+       line-height: 1.5;
+       /* 줄 간격 */
+   }
+</style>
+</head>
+
+<body>
+
+	<!-- Layout -->
+    <div class="mb-5 d-flex justify-content-center">
+        <div class="dynamic-box">
+
+            <div class="header-area">
+                <div class="d-flex align-items-center">
+                    <div class="header-icon">
+                        <img src="resources/icon/plant-line@3x.png" alt="plantIcon">
+                    </div>
+                    <div class="header-text">
+                        <div class="header-title">우리 집 탄소 배출량</div>
+                        <div class="header-subtitle">우리 집 탄소 배출량을 계산하여 제공하는 서비스입니다.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 새로운 15px 라운드 네모 박스 -->
+            <div class="rounded-box mt-2 mb-5 mx-auto p-4">
+                <!-- 폼 삽입 -->
+                <form style="margin-left: 40px; margin-top: 20px; margin-bottom: 20px;">
+                    <div class="mb-3 row align-items-center">
+                        <div class="carbon-box">
+                            <label for="electricityType" class="col-sm-2 col-form-label carbon-text-2">전기</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <select id="electricityType" class="form-select small-select form-spacing"
+                                onchange="toggleExtraField()">
+                                <option value="total">총사용량</option>
+                                <option value="product">전자제품 사용량</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-center form-spacing-1">
+                            <!-- 동적으로 전환될 입력 필드 -->
+                            <div id="electricityInputWrapper" class="d-flex align-items-center">
+                                <input type="number" id="electricityInput1" class="form-control-1 me-2" placeholder="0">
+                                <div class="carbon-text" id="electricityUnit">kWh</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="mb-3 row align-items-center">
+                        <div class="carbon-box">
+                            <label for="gasInput" class="col-sm-2 col-form-label carbon-text-2">가스</label>
+                        </div>
+                        <div class="col-sm-4 form-spacing">
+                            <div class="d-flex align-items-center">
+                                <input type="number" id="gasInput" class="form-control-1 me-2" placeholder="0">
+                                <div class="carbon-text">m³</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row align-items-center">
+                        <div class="carbon-box">
+                            <label for="heatInput" class=" col-form-label carbon-text-2">지역난방</label>
+                        </div>
+                        <div class="col-sm-4 form-spacing">
+                            <div class="d-flex align-items-center">
+                                <input type="number" id="heatInput" class="form-control-1 me-2" placeholder="0">
+                                <div class="carbon-text">Mcal</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="carbon-btn" onclick="calculateCarbon()">계산하기</button>
+                        <button type="button" class="carbon-btn-2" onclick="resetInputs()">초기화</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 3등분된 15px 라운드 네모 박스 -->
+            <div class="rounded-box mt-2 mb-5 mx-auto p-4">
+                <div class="row text-center">
+                    <!-- 첫 번째 영역: 배출량 결과 -->
+                    <div class="col border-end">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">배출량 결과</div>
+                        </div>
+                        <img src="resources/icon/co2.png" alt="CO2 Icon" class="result-icon mt-3">
+                        <div class="result-value carbon-text-4" id="totalResult">
+                            <span class="carbon-text-5" style="color: #d1522b !important;">0 </span>kgCO₂
+                        </div>
+                    </div>
+
+                    <!-- 두 번째 영역: 중부지방 소나무 -->
+                    <div class="col border-end">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">중부지방 소나무</div>
+                        </div>
+                        <img src="resources/icon/tree.png" alt="Tree Icon" class="tree-icon mt-3">
+                        <div class="result-value carbon-text-4" id="treeResult">
+                            <span class="carbon-text-5" style="color: #1F8A70 !important; ">0 </span>그루
+                        </div>
+                    </div>
+
+                    <!-- 세 번째 영역: 전기, 가스, 지역난방 -->
+                    <div class="col">
+                        <div class="carbon-box-1">
+                            <div class="carbon-text-3">사용 내역</div>
+                        </div>
+                        <table class="table table-borderless mt-5">
+                            <tbody>
+                                <!-- 1 -->
+                                <tr>
+                                    <td class="result-title carbon-text-3">전기</td>
+                                    <td class="result-value carbon-text-3">
+                                        <span class="result-number"><fmt:formatNumber value="0" maxFractionDigits="3" /></span>
+                                        <span class="result-unit">kWh</span>
+                                    </td>
+                                    <td class="result-co2 carbon-text-3">
+                                        <span class="result-number"><fmt:formatNumber value="0" maxFractionDigits="3" /></span>
+                                        <span class="result-unit">kgCO₂</span>
+                                    </td>
+                                </tr>
+                                <td colspan="3" style="height: 30px;"></td> <!-- 간격 행 -->
+                                <tr>
+                                    <td class="result-title carbon-text-3">가스</td>
+                                    <td class="result-value carbon-text-3">
+                                        <span class="result-number"><fmt:formatNumber value="0" maxFractionDigits="3" /></span>
+                                        <span class="result-unit">m³</span>
+                                    </td>
+                                    <td class="result-co2 carbon-text-3">
+                                        <span class="result-number"><fmt:formatNumber value="0" maxFractionDigits="3" /></span>
+                                        <span class="result-unit">kgCO₂</span>
+                                    </td>
+                                </tr>
+                                <td colspan="3" style="height: 30px;"></td> <!-- 간격 행 -->
+                                <tr>
+                                    <td class="result-title carbon-text-3">지역난방</td>
+                                    <td class="result-value carbon-text-3">
+                                        <span class="result-number"><fmt:formatNumber value="0" maxFractionDigits="3" /></span>
+                                        <span class="result-unit">Mcal</span>
+                                    </td>
+                                    <td class="result-co2 carbon-text-3">
+                                        <span class="result-number"><fmt:formatNumber value="0" maxFractionDigits="3" /></span>
+                                        <span class="result-unit">kgCO₂</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div class="source-container">
+                ※ 출처 : 지자체 온실가스 감축사업별 감축원단위 적용 가이드라인(한국환경공단, 2023년), 주요 산림수종의 표준 탄소흡수량(국립산림과학원, 2019년)
+            </div>
+        </div>
+    </div>
+	<!-- Footer -->
+	<footer>
+		<p class="footer">© 2024 우주 최강팀 리제로</p>
+	</footer>
+	    <script>
+        const emissionFactors = {
+            electricity: 0.4777,
+            gas: 2.1796,
+            heat: 0.123,
+            tree: 0.00782
+        };
+
+        function toggleExtraField() {
+            const electricityType = document.getElementById("electricityType").value;
+            const inputWrapper = document.getElementById("electricityInputWrapper");
+
+            if (electricityType === "product") {
+                inputWrapper.innerHTML = `
+                    <input type="number" id="electricityInputW" class="form-control-1 me-2" placeholder="0">
+                    <div class="carbon-text">W</div>
+                    <input type="number" id="electricityInputHour" class="form-control-1 ms-3 me-2 form-spacing" placeholder="0">
+                    <div class="carbon-text">시간</div>
+                `;
+            } else {
+                inputWrapper.innerHTML = `
+                    <input type="number" id="electricityInput1" class="form-control-1 me-2" placeholder="0">
+                    <div class="carbon-text">kWh</div>
+                `;
+            }
+        }
+        function calculateCarbon() {
+            const electricityType = document.getElementById("electricityType").value;
+
+            let electricityCarbon = 0;
+            let electricityUsed = 0;
+
+            if (electricityType === "product") {
+                const power = parseFloat(document.getElementById("electricityInputW")?.value) || 0;
+                const hours = parseFloat(document.getElementById("electricityInputHour")?.value) || 0;
+                electricityUsed = power * hours / 1000;
+                electricityCarbon = electricityUsed * emissionFactors.electricity;
+            } else {
+                electricityUsed = parseFloat(document.getElementById("electricityInput1")?.value) || 0;
+                electricityCarbon = electricityUsed * emissionFactors.electricity;
+            }
+
+            const gasInput = parseFloat(document.getElementById("gasInput").value) || 0;
+            const heatInput = parseFloat(document.getElementById("heatInput").value) || 0;
+
+            const gasCarbon = gasInput * emissionFactors.gas;
+
+            // 지역난방 배출량 계산 (정확한 공식 적용)
+            const heatCarbon = heatInput * 0.1226 + 0.0004;
+
+            // 결과 업데이트
+            const tableRows = document.querySelectorAll("table tbody tr");
+
+            // 전기 결과 업데이트
+            tableRows[0].querySelector(".result-value .result-number").textContent = formatNumber(electricityUsed);
+            tableRows[0].querySelector(".result-co2 .result-number").textContent = formatNumber(electricityCarbon);
+
+            // 가스 결과 업데이트
+            tableRows[2].querySelector(".result-value .result-number").textContent = formatNumber(gasInput);
+            tableRows[2].querySelector(".result-co2 .result-number").textContent = formatNumber(gasCarbon);
+
+            // 지역난방 결과 업데이트
+            tableRows[4].querySelector(".result-value .result-number").textContent = formatNumber(heatInput);
+            tableRows[4].querySelector(".result-co2 .result-number").textContent = formatNumber(heatCarbon);
+
+            // 최종 결과 업데이트
+            const totalCarbon = electricityCarbon + gasCarbon + heatCarbon;
+            const treeEquivalent = totalCarbon * emissionFactors.tree;
+
+            document.getElementById("totalResult").innerHTML = '<span class="carbon-text-5" style="color: #d1522b;">'+formatNumber(totalCarbon)+'</span> kgCO₂';
+            document.getElementById("treeResult").innerHTML = '<span class="carbon-text-5" style="color: #1F8A70;">'+formatNumber(treeEquivalent)+'</span> 그루';
+        }
+
+        // 소수점 뒤 0 제거 함수
+        function formatNumber(value) {
+            return value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 3 });
+        }
+
+        function resetInputs() {
+            document.getElementById("electricityType").value = "total";
+            toggleExtraField();
+            document.getElementById("gasInput").value = "";
+            document.getElementById("heatInput").value = "";
+
+            // 테이블 초기화
+            document.querySelectorAll(".result-number").forEach(el => el.textContent = "0");
+
+            // 최종 결과 초기화
+            document.getElementById("totalResult").innerHTML ='<span class="carbon-text-5" style="color: #d1522b;">0</span> kgCO₂';
+            document.getElementById("treeResult").innerHTML = '<span class="carbon-text-5" style="color: #1F8A70;">0</span> 그루';
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+

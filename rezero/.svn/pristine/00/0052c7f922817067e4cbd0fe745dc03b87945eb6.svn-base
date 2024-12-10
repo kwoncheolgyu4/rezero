@@ -1,0 +1,11 @@
+package com.zero.re.use.vo;
+
+import lombok.Data;
+
+@Data
+public class InfoVO {
+	private int year;
+	private int sDate;
+	private int eDate;
+	private String code;
+}

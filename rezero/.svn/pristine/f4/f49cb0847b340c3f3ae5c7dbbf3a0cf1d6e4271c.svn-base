@@ -1,0 +1,10 @@
+package com.zero.re.use.vo;
+
+import lombok.Data;
+
+@Data
+public class EnergyVO {
+	private String name;
+	private String date;
+	private String use;
+}

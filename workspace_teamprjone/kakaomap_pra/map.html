@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>다각형에 이벤트 등록하기2</title>
+    <style>
+        .area {
+            position: absolute;
+            background: #fff;
+            border: 1px solid #888;
+            border-radius: 3px;
+            font-size: 12px;
+            top: -5px;
+            left: 15px;
+            padding: 2px;
+        }
+        .info {
+            font-size: 12px;
+            padding: 5px;
+        }
+        .info .title {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="map" style="width:100%;height:1000px;"></div>
+    <span id="maplevel"></span>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9d407e93fbddd6bd9146ab8e8274441c"></script>
+    <script>
+        // 전역 변수 선언
+        const areaData = {
+            main: { file: "resources/deajeun_gu.geojson", areas: [] },
+            donggu: { file: "resources/deajeun_donggu_dong.geojson", areas: [] },
+            sugu: { file: "resources/deajeun_sugu_dong.geojson", areas: [] },
+            daduckgu: { file: "resources/deajeun_daduckgu_dong.geojson", areas: [] },
+            joonggu: { file: "resources/deajeun_joonggu_dong.geojson", areas: [] },
+            yousounggu: { file: "resources/deajeun_yousounggu_dong.geojson", areas: [] }
+        };
+        
+        let polygons = [];
+        
+        // JSON 파일 파싱 함수
+        function parseGeoJSON(geojsonFile, nameProperty = 'SIG_KOR_NM') {
+            const areas = [];
+            $.getJSON(geojsonFile, function(geojson) {
+                const units = geojson.features;
+                units.forEach((unit, index) => {
+                    const coordinates = unit.geometry.coordinates;
+                    const name = unit.properties[nameProperty];
+                    
+                    const area = {
+                        name: name,
+                        path: coordinates[0][0].map(coordinate => 
+                            new kakao.maps.LatLng(coordinate[1], coordinate[0])
+                        )
+                    };
+                    areas.push(area);
+                });
+            });
+
+			if(nameProperty == 'EMD_KOR_NM'){
+				console.log(areas);
+			}
+            return areas;
+        }
+
+        // 초기 데이터 로딩
+        function loadAllData() {
+            $.ajaxSetup({ async: false });
+            
+            // 모든 지역 데이터 로딩
+            Object.keys(areaData).forEach(key => {
+                const nameProperty = key === 'main' ? 'SIG_KOR_NM' : 'EMD_KOR_NM';
+                areaData[key].areas = parseGeoJSON(areaData[key].file, nameProperty);
+            });
+        }
+
+        // 폴리곤 생성 및 이벤트 등록 함수
+        function createPolygon(area) {
+            const polygon = new kakao.maps.Polygon({
+                map: map,
+                path: area.path,
+                strokeWeight: 2,
+                strokeColor: '#39DE2A',
+                strokeOpacity: 0.8,
+                fillColor: '#fff',
+                fillOpacity: 0.7
+            });
+
+            const customOverlay = new kakao.maps.CustomOverlay({});
+
+            // 마우스오버 이벤트
+            kakao.maps.event.addListener(polygon, 'mouseover', function(mouseEvent) {
+                polygon.setOptions({ fillColor: '#09f' });
+                customOverlay.setContent('<div class="area">' + area.name + '</div>');
+                customOverlay.setPosition(mouseEvent.latLng);
+                customOverlay.setMap(map);
+            });
+
+            // 마우스 이동 이벤트
+            kakao.maps.event.addListener(polygon, 'mousemove', function(mouseEvent) {
+                customOverlay.setPosition(mouseEvent.latLng);
+            });
+
+            // 마우스아웃 이벤트
+            kakao.maps.event.addListener(polygon, 'mouseout', function() {
+                polygon.setOptions({ fillColor: '#fff' });
+                customOverlay.setMap(null);
+            });
+
+            // 클릭 이벤트
+            kakao.maps.event.addListener(polygon, 'click', function() {
+                const guMap = {
+                    '동구': 'donggu',
+                    '서구': 'sugu',
+                    '대덕구': 'daduckgu',
+                    '유성구': 'yousounggu',
+                    '중구': 'joonggu'
+                };
+
+                removeAllPolygons();
+                // map.setLevel(map.getLevel() - 1);
+
+                const guKey = guMap[area.name];
+                if (guKey && areaData[guKey]) {
+                    displayAreas(areaData[guKey].areas);
+                }
+            });
+
+            return polygon;
+        }
+
+        // 영역 표시 함수
+        function displayAreas(areas) {
+            areas.forEach(area => {
+                const polygon = createPolygon(area);
+                polygons.push(polygon);
+            });
+        }
+
+        // 모든 폴리곤 제거 함수
+        function removeAllPolygons() {
+            polygons.forEach(polygon => polygon.setMap(null));
+            polygons = [];
+        }
+
+        // 지도 초기화
+        const mapContainer = document.getElementById('map');
+        const mapOption = {
+            center: new kakao.maps.LatLng(36.289177155804474, 127.37013754266924),
+            level: 9
+        };
+        const map = new kakao.maps.Map(mapContainer, mapOption);
+
+        // 실행
+        loadAllData();
+        displayAreas(areaData.main.areas);
+    </script>
+</body>
+</html>

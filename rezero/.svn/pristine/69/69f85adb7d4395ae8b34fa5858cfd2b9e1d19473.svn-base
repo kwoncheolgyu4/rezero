@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zero.re.member.dao.IMemberDAO">
+	<select id="memLogin" resultType="MemberVO" parameterType="MemberVO">
+		SELECT * 
+		FROM member
+		WHERE id = #{id}
+		AND pw = #{pw}
+		AND yse_yn = 'Y'	
+	</select>
+	
+	<insert id="memRegist" parameterType="MemberVO">
+		INSERT INTO member(id, pw, address) VALUES(#{id}, #{pw}, #{address})
+	</insert>
+	
+	<select id="idCheck" resultType="int" parameterType="String">
+		SELECT COUNT(*) FROM member
+		WHERE id = #{id}
+	</select>
+	
+	<update id="memUpdate" parameterType="MemberVO">
+		UPDATE member SET pw = #{pw}, address = #{address}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="memExit" parameterType="String">
+		UPDATE member SET yse_yn = 'N'
+		WHERE id = #{id}
+	</update>
+	
+	<select id="memberChart" resultType="MemberChartVO" parameterType="String">
+	
+	    SELECT
+	        elrw.elrw_usqnt/1000 as elrw_usqnt,
+	        elrw.elrw_grgs_dsamt,
+	        cty.cty_gas_usqnt/1000 as cty_gas_usqnt,
+	        cty.cty_gas_grgs_dsamt
+	    FROM
+	        elrw_usage elrw
+	    JOIN
+	        cty_gas_usage cty ON elrw.location_id = cty.location_id
+	    WHERE
+	        elrw.location_id IN (
+	            SELECT location_id
+	            FROM locations
+	            WHERE lotno_addr LIKE '%' || #{address} || '%'
+	              AND stndd_yr = 2022
+	              AND usd_mm = 12
+        )
+        
+</select>
+</mapper>

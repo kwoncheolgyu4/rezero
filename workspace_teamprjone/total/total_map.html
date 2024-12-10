@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대전 지도</title>
+    <style>
+        html, body {
+            margin: 0; /* 브라우저 기본 여백 제거 */
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* 스크롤 제거 */
+        }
+
+        #map-container {
+            width: 100vw; /* 화면 전체 너비 */
+            height: 100vh; /* 화면 전체 높이 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        svg, object {
+            width: 100%; /* 컨테이너의 100% */
+            height: 100%; /* 컨테이너의 100% */
+            display: block; /* 블록 요소로 설정 */
+        }
+
+        #back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            display: none; /* 초기에는 숨김 */
+        }
+
+        #back-button:hover {
+            background-color: #7bd031a9;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 돌아가기 버튼 -->
+    <button id="back-button" onclick="showGuMap()">구 선택으로 돌아가기</button>
+
+    <!-- 지도 컨테이너 -->
+    <div id="map-container">
+        <!-- 기본으로 구 모음 SVG 표시 -->
+        <object id="map-view" type="image/svg+xml" data="./data/daejeon_map_gu_ref_ref.html"></object>
+    </div>
+
+    <script>
+        const mapView = document.getElementById('map-view');
+        const backButton = document.getElementById('back-button');
+
+        // 구에서 동으로 전환
+        function showDongMap(dongSvgFile) {
+            mapView.setAttribute('data', dongSvgFile); // 동 SVG 로드
+            backButton.style.display = 'block'; // "구 선택으로 돌아가기" 버튼 표시
+        }
+
+        // 동에서 구로 전환
+        function showGuMap() {
+            mapView.setAttribute('data', './data/daejeon_map_gu_ref_ref.html'); // 구 SVG 로드
+            backButton.style.display = 'none'; // "구 선택으로 돌아가기" 버튼 숨김
+        }
+    </script>
+
+</body>
+
+</html>

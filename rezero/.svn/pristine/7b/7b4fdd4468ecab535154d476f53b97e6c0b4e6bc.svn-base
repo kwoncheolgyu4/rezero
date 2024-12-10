@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zero.re.member.dao.IMemberDAO">
+	<select id="memLogin" resultType="MemberVO" parameterType="MemberVO">
+		SELECT * 
+		FROM member
+		WHERE id = #{id}
+		AND pw = #{pw}
+		AND yse_yn = 'Y'	
+	</select>
+	
+	<insert id="memRegist" parameterType="MemberVO">
+		INSERT INTO member(id, pw, address) VALUES(#{id}, #{pw}, #{address})
+	</insert>
+	
+	<select id="idCheck" resultType="int" parameterType="String">
+		SELECT COUNT(*) FROM member
+		WHERE id = #{id}
+	</select>
+</mapper>

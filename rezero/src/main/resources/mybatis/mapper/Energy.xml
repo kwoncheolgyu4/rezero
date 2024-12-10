@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.zero.re.energy.dao.IEnergyDAO">
+	<select id="energyShow" resultType="EnergyVO" parameterType="infoVO">
+		SELECT year || LPAD(month,2,0) year, ROUND(ele/1000) ele, ROUND(gas/1000) gas, 
+		ROUND(ele_dsa) ele_dsa, ROUND(gas_dsa) gas_dsa
+		FROM energy_data
+		WHERE year = #{year}
+		AND month BETWEEN #{sdate} AND #{edate}
+		AND addr_cd LIKE #{code} || '%'
+	</select>
+	
+	<select id="guShow" resultType="EnergyVO" parameterType="infoVO">
+	SELECT 
+	    year || LPAD(month, 2, '0') AS year,
+	    ROUND((SUM(ele/1000)/COUNT(*))) AS ele, 
+	    ROUND((SUM(gas/1000)/COUNT(*))) AS gas, 
+	    ROUND(SUM(ele_dsa)/COUNT(*)) AS ele_dsa, 
+	    ROUND(SUM(gas_dsa)/COUNT(*)) AS gas_dsa
+	FROM 
+	    energy_data
+	WHERE 
+	    year = #{year}
+	    AND month BETWEEN #{sdate} AND #{edate}
+	    AND addr_cd LIKE #{code} || '%'
+	GROUP BY 
+	    year, month
+	ORDER BY 
+	    year, month
+	</select>
+	
+	<select id="daejeonShow" resultType="EnergyVO" parameterType="infoVO">
+		SELECT 
+		    year || LPAD(month, 2, '0') AS year,
+		    ROUND(AVG(ele/1000)) AS ele, 
+		    ROUND(AVG(gas/1000)) AS gas,
+		    ROUND(AVG(ele_dsa)) AS ele_dsa,
+		    ROUND(AVG(gas_dsa)) AS gas_dsa
+		FROM 
+		    energy_data 
+		WHERE 
+		    year = #{year}
+		    AND month BETWEEN #{sdate} AND #{edate}
+		GROUP BY 
+		    year, month
+		ORDER BY 
+		    year, month   
+	</select>
+	
+	<select id="energyGu" resultType="EnergyVO" parameterType="infoVO">
+		SELECT 
+		    year || LPAD(month, 2, '0') AS year, -- 년월을 하나의 컬럼으로 생성
+		    ROUND((SUM(pre_ele_usa/1000)/COUNT(*))) AS ele, 
+		    ROUND((SUM(pre_gas_usa/1000)/COUNT(*))) AS gas, 
+		    ROUND(SUM(pre_ele_emi)/COUNT(*)) AS ele_dsa, 
+		    ROUND(SUM(pre_gas_emi)/COUNT(*)) AS gas_dsa
+		FROM 
+		    prediction_energy
+		WHERE 
+		    year = '2023'
+		    AND month BETWEEN 1 AND 6
+		    AND addr_cd LIKE #{code} || '%'
+		GROUP BY 
+		    year, month
+		ORDER BY 
+		    year, month
+	</select>
+	
+	<select id="energyDong" resultType="EnergyVO" parameterType="infoVO">
+		SELECT year || LPAD(month,2,0) year, 
+		    ROUND(pre_ele_usa/1000) ele, 
+			ROUND(pre_gas_usa/1000) gas, 
+			ROUND(pre_ele_emi) ele_dsa, 
+			ROUND(pre_gas_emi) gas_dsa 
+		FROM prediction_energy
+		WHERE year = '2023'
+		AND month BETWEEN 1 AND 6
+		AND addr_cd LIKE #{code} || '%'
+	</select>
+	
+</mapper>

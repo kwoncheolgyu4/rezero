@@ -1,0 +1,5 @@
+package com.zero.re.use.service;
+
+public interface UserService {
+
+}

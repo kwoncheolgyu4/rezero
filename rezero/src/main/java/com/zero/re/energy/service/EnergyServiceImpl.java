@@ -1,0 +1,49 @@
+package com.zero.re.energy.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.zero.re.energy.dao.IEnergyDAO;
+import com.zero.re.energy.vo.EnergyVO;
+import com.zero.re.energy.vo.InfoVO;
+
+@Service("energyService")
+public class EnergyServiceImpl implements EnergyService {
+	
+	@Autowired
+	IEnergyDAO dao;
+	
+	@Override
+	public List<EnergyVO> energyShow(InfoVO vo){
+		List<EnergyVO> result =  dao.energyShow(vo);
+		
+		return result;
+	}; 
+	
+	@Override
+	public List<EnergyVO> daejeonShow(InfoVO vo){
+		List<EnergyVO> result =  dao.daejeonShow(vo);
+		
+		return result;
+	}; 
+	
+	@Override
+	public List<EnergyVO> guShow(InfoVO vo){
+		List<EnergyVO> result =  dao.guShow(vo);
+		
+		return result;
+	};
+	
+	public List<EnergyVO> energyDong(InfoVO vo){
+		List<EnergyVO> result =  dao.energyDong(vo);
+		
+		return result;
+	}; 
+	public List<EnergyVO> energyGu(InfoVO vo){
+		List<EnergyVO> result =  dao.energyGu(vo);
+		
+		return result;
+	}; 
+}

@@ -1,0 +1,1310 @@
+
+<%
+	/* ================================================================= 
+	 * 작성일     : 2024. 11. 21. 
+	 * 작성자     : 팽수
+	 * 상세설명  : 
+	 * 화면ID  :
+	 * ================================================================= 
+	 * 수정일         작성자             내용      
+	 * ----------------------------------------------------------------------- 
+	 * ================================================================= 
+	 */
+%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ReZERO</title>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Css -->
+<link rel="stylesheet" href="resources/css/mystyles.css">
+
+<!-- Bootstrap -->
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+	
+<!-- 아이콘 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />	
+	
+<!-- 주소 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- 날씨 -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="resources/js/scripts.js"></script>
+
+<style type="text/css">
+	.modal-container {
+      z-index: 1000; /* 모달을 다른 요소들 위에 표시 */
+    }
+
+    /* 모달 배경 */
+    .modal-content {
+      width: 450px;
+      min-height: 600px;
+      flex-grow: 0;
+      border-radius: 30px;
+      background-color: #fff;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column; /* 수직으로 요소를 배치 */
+      align-items: center; /* 가로 가운데 정렬 */
+      transition: min-height 0.3s ease; /* 높이 변경 애니메이션 */
+    }
+    
+    .signup-section.active {
+      min-height: 520px;
+    }
+    
+   /* 모달 헤더 */
+    .modal-header {
+      position: relative; /* 닫기 버튼 위치를 위한 기준 */
+      width: 100%;
+      height: 94px;
+      background-color: #2b6466;
+      border-top-left-radius: 29px;
+      border-top-right-radius: 29px;
+      border-color: #2b6466;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 로고 스타일 */
+    .modal-header img {
+      height: 34px; /* 로고 크기 34px로 설정 */
+      width: auto; /* 비율을 맞추기 위해 width 자동 설정 */
+    }
+
+    /* 헤더 바로 아래 40px 요소 */
+    .below-header {
+      width: 450px;
+      height: 40px;
+      background-color: #2b6466;
+    }
+
+     /* 헤더 공통 스타일 */
+     .left-header, .right-header {
+         width: 225px;
+         height: 68px;
+         position: absolute;
+         top: 94px;
+         z-index: 2;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         cursor: pointer;
+         transition: all 0.3s ease;
+     }
+
+    /* 로그인 헤더 스타일 */
+        .left-header {
+            left: 0;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            background-color: #2b6466;
+        }
+
+        .left-header p {
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* 회원가입 헤더 스타일 */
+         .right-header {
+            right: 0;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            background-color: #2b6466;
+        }
+
+        .right-header p {
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+     /* 활성화된 헤더 스타일 */
+        .left-header.active {
+            background-color: #fff;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+        }
+
+        .left-header.active p {
+            color: #2b6466;
+        }
+
+        .right-header.active {
+            background-color: #fff;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+        }
+
+        .right-header.active p {
+            color: #2b6466;
+        }
+
+        /* 섹션 표시/숨김 스타일 */
+        .login-section, .signup-section {
+            display: none;
+        }
+
+        .login-section.active, .signup-section.active {
+            display: block;
+        }
+    
+    /* 텍스트 스타일 */
+    .text-1 {
+      display: block;
+      font-family: Pretendard, sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: left;
+      color: #417274;
+      margin-top: 60px;
+      padding-left: 26px;
+    }
+    .text-2 {
+      display: block;
+      font-family: Pretendard, sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: left;
+      color: #417274;
+      padding-left: 26px;
+    }
+    .form-login-1 {    
+      width: 400px;
+      height: 50px;
+      margin: 8px 20px 22px;
+      border-radius: 10px;
+      border: 2px solid #58A4A7 !important; 
+      background-color: #eff6f6 !important; 
+      padding: 0 16px;
+      font-size: 16px;
+      font-family: Pretendard, sans-serif;
+      color: #094037 !important; /* 텍스트 색상 */
+      outline: none;
+    }
+
+    .form-login-1:focus {
+      outline: none !important;
+      border: 2px solid #ffa5e1 !important; 
+      background-color: #FFF6FA !important;
+      box-shadow: none !important;
+      color: #094037 !important;
+    }
+    .form-login-1::placeholder {
+      color: #2b6466;
+      font-size: 16px; /* 글자 크기 */
+    }
+    .form-login-2 {    
+      width: 400px;
+      height: 50px;
+      margin: 8px 20px 18px;
+      border-radius: 10px;
+      border: 2px solid #58A4A7 !important; 
+      background-color: #eff6f6 !important; 
+      padding: 0 16px;
+      font-size: 16px;
+      font-family: Pretendard, sans-serif;
+      color: #094037 !important; /* 텍스트 색상 */
+      outline: none;
+    }
+
+    .form-login-2:focus {
+      outline: none !important;
+      border: 2px solid #ffa5e1 !important; 
+      background-color: #FFF6FA !important;
+      box-shadow: none !important;
+      color: #094037 !important;
+    }
+    .form-login-2::placeholder {
+      color: #2b6466;
+      font-size: 16px; /* 글자 크기 */
+    }
+    .form-login-3 {    
+      width: 400px;
+      height: 50px;
+      margin: 8px 20px 18px;
+      border-radius: 10px;
+      border: 2px solid #58A4A7 !important; 
+      background-color: #eff6f6 !important; 
+      padding: 0 16px;
+      font-size: 16px;
+      font-family: Pretendard, sans-serif;
+      color: #094037 !important; /* 텍스트 색상 */
+      outline: none;
+    }
+
+    .form-login-3:focus {
+      outline: none !important;
+      border: 2px solid #ffa5e1 !important; 
+      background-color: #FFF6FA !important;
+      box-shadow: none !important;
+      color: #094037 !important;
+    }
+    .form-login-3::placeholder {
+      color: #2b6466;
+      font-size: 16px; /* 글자 크기 */
+    }
+
+    p {
+    margin-top: 0;
+    margin-bottom: 0 !important;
+    }
+  
+  .form-check {
+    display: flex;
+    align-items: center;
+    padding-left: 28px;
+  }
+
+  .form-check-input-custom {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background-color: #ffffff;
+    border: 2px solid #58A4A7;
+    -webkit-appearance: none; /* 기본 체크박스 스타일 제거 */
+    -moz-appearance: none; /* Firefox 체크박스 스타일 제거 */
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .form-check-input-custom:checked {
+    background-color: #f0a8cd;
+    border: none;
+  }
+  
+  .form-check-label {
+    margin-left: 10px;
+    margin-top: 2px;
+    font-family: Pretendard, sans-serif;
+    font-size: 16px;
+    color: #417274;
+    font-weight: 500;
+  }
+  .divider-1 {
+  border-bottom: 3px dashed #9dc2c3 !important; /* 대시 선 */
+  margin: 30px auto !important; /* 위아래 여백 및 가로 중앙 정렬 */
+  width: 86%; /* 선의 길이를 부모 요소의 90%로 설정 */
+  max-width: 600px; /* 최대 길이를 600px로 제한 */
+}
+.login-button {
+  width: 400px; /* 버튼 너비 */
+  height: 50px; /* 버튼 높이 */
+  margin-top: 4px; /* 상단 간격 설정 */
+  border-radius: 10px; /* 버튼 모서리 둥글게 */
+  border: none; /* 버튼 테두리 제거 */
+  background-color: #58A4A7; /* 버튼 배경색 */
+  color: white; /* 버튼 텍스트 색상 */
+  font-size: 16px; /* 텍스트 크기 */
+  font-family: Pretendard, sans-serif;
+  font-weight: 700;
+  cursor: pointer; /* 클릭 가능한 커서 표시 */
+  transition: background-color 0.3s ease; /* 색상 전환 효과 */
+}
+
+.login-button:hover {
+  background-color: #2b6466; /* 호버 시 배경색 변경 */
+}
+
+.login-button:active {
+  background-color: #1d4749; /* 클릭 시 배경색 변경 */
+}
+.custom-close-button {
+  position: absolute;
+  top: 33%; /* 수직 가운데 정렬 */
+  right: 22px; /* 우측 여백 */
+  transform: translateY(-50%); /* 버튼을 수직 가운데 정렬 */
+  background: none; /* 배경 없음 */
+  border: none; /* 테두리 없음 */
+  padding: 0; /* 기본 여백 제거 */
+  cursor: pointer; /* 클릭 가능 표시 */
+}
+
+.custom-close-button img {
+  width: 16px; /* 버튼 이미지 크기 */
+  height: 16px; /* 버튼 이미지 크기 */
+}
+</style>
+
+</head>
+<body>
+	<!-- Top -->
+	<nav class="navbar navbar-expand-lg bg-white">
+		<div class="container-fluid">
+			<!-- Logo -->
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/"> 
+				<img src="resources/icon/logo.png" class="logo" alt="Logo">
+			</a>
+			<!-- Icons -->
+			<div class="menu me-3">
+				<c:if test="${sessionScope.login == null}">
+					<a><img src="resources/icon/user-alt-fill@3x.png" id='nonLogin'class="icon"
+						alt="mem Icon"></a>
+				</c:if>
+				<c:if test="${sessionScope.login != null}">
+					<a><img src="resources/icon/menu@3x.png" id="myPage" class="icon"
+						alt="Menu Icon" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMyPage" aria-controls="offcanvasMyPage"></a>
+				</c:if>
+			</div>
+		</div>
+	</nav>
+	
+	<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-container">
+			    <div class="modal-content">
+			      <!-- Modal Header -->
+			      <div class="modal-header">
+			        <img src="resources/icon/logo2@3x.png" alt="Logo"> <!-- 로고 이미지 삽입 -->
+			        <button type="button" class="custom-close-button" aria-label="Close" onclick="closeModal()">
+			          <img src="resources/icon/X.png" alt="닫기 버튼" />
+			        </button>
+			      </div>
+			      <!-- 헤더 토글 섹션 -->
+		        <div class="left-header active" onclick="showLogin()">
+		            <p>로그인</p>
+		        </div>
+		        <div class="right-header" onclick="showSignup()">
+		            <p>회원가입</p>
+		        </div>
+			      <div class="below-header"></div>
+			
+				  <!-- 로그인 섹션 -->
+			        <div class="login-section active">
+			        	<form class="signIn-form" action="" method="post">
+				            <div>
+				                <span class="text-1">아이디</span>
+				                <input type="text" class="form-login-1" id="id" name="id" placeholder="아이디를 입력하세요.">
+				                <span class="text-2">비밀번호</span>
+				                <input type="password" class="form-login-2" id="pw" name="pw" placeholder="비밀번호를 입력하세요.">
+				                <!-- 체크박스와 아이디 저장 -->
+				                <div class="form-check">
+				                    <input type="checkbox" id="rememberId" class="form-check-input-custom">
+				                    <label for="rememberId" class="form-check-label">아이디 저장</label>
+				                </div>
+				            </div>
+				            <div class="divider-1"></div>
+				            <!-- 로그인 버튼 -->
+				            <div class="d-flex justify-content-center">
+				            	<button class="login-button" id="login" style="margin: 0 auto;">로그인</button>
+				            </div>
+				        </form>
+			        </div>
+			
+			        <!-- 회원가입 섹션 -->
+			        <div class="signup-section">
+			        	<form class="signUp-form" action="" method="post">
+				            <div>
+				            	<div class="d-flex justify-content-between">
+					            	<span class="text-1">아이디</span>
+					            	<span class="text-1">
+					            		<span id="good" style="display: none; color: #6cae62; margin-right: 22px">사용 가능한 아이디 입니다.</span>
+										<span id="bad" style="display: none; color: #dc3545; margin-right: 22px">이미 사용중인 아이디 입니다.</span>
+					            	</span>
+								</div>
+				                <input type="text" class="form-login-1" id="newId" placeholder="아이디를 입력하세요." oninput="idCheck()">
+				                <span class="text-2">비밀번호</span>
+				                <input type="password" class="form-login-2" id="newPw" placeholder="비밀번호를 입력하세요.">
+				                <span class="text-2">주소</span>
+				                <input type="text" class="form-login-3 newPlace" placeholder="주소를 입력하세요">
+				            </div>
+				            <div class="divider-1"></div>
+				            <div class="d-flex justify-content-center">
+				            	<button class="login-button" id="signUp" type="button">회원가입</button>
+				            </div>
+			            </form>
+			        </div>
+			    </div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="offcanvasMyPage" aria-labelledby="offcanvasMyPageLabel">
+        <div class="offcanvas-header">
+            <!-- 아이콘 추가 -->
+            <img src="resources/icon/user-alt-fill2@3x.png" alt="Custom Icon" class="offcanvas-icon">
+            <h5 class="offcanvas-title" id="offcanvasMyPageLabel">마이페이지</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Input Fields -->
+            <div class="mt-3">
+                <label for="inputId" class="form-label">아이디</label>
+                <input type="text" class="form-control" id="inputId" value="${sessionScope.login.id}" disabled>
+                
+               	<div class="position-relative">
+	                <label for="defaultPw" class="form-label">비밀번호</label>
+	                <input type="password" class="form-control" id="defaultPw" value="${sessionScope.login.pw}" disabled>
+	                <i class="ms-3 fa fa-eye-slash" data-target="#defaultPw"></i>
+    			</div>
+    			
+    			<div class="position-relative">
+	    			<label for="inputPassword" class="form-label">비밀번호 재설정</label>
+	                <input type="password" class="form-control" id="inputPassword" placeholder="새 비밀번호 입력">
+	                <i class="ms-3 fa fa-eye-slash" data-target="#inputPassword"></i>
+                </div>
+    
+                <label for="inputAddress" class="form-label">주소</label>
+                <input type="text" class="form-control me-2 newPlace" id="inputAddress" value="${sessionScope.login.address}">
+    			
+            </div>
+    
+            <!-- Buttons -->
+            <div>
+                <button class="btn btn-2 w-100 mb-3 mt-4" id="update">수정</button>
+                <button class="btn btn-3 w-100" id="logout">로그아웃</button>
+            </div>
+    
+            <!-- Divider -->
+            <div class="divider"></div>
+    
+            <!-- Withdrawal -->
+            <div class="text-center mt-4">
+                <button class="btn btn-link" id="exit">회원 탈퇴</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript">
+
+
+$(document).ready(function() {
+	let isLoggedIn = false;  // 로그인 여부를 추적하는 변수
+	
+	$('.newPlace').click(execDaumPostcode);
+	
+	 // 세션 상태 확인
+    if ($('#inputAddress').val()) {  // 주소값이 있다면 로그인된 상태
+        isLoggedIn = true;
+        // 차트 데이터 요청
+        $.ajax({
+            type: "post",
+            url: "/chartView",
+            data: $('#inputAddress').val(),
+            contentType: 'application/json; charset=utf-8',
+            success: function (chart) {
+                if(chart) {
+                    let globalElectricity = parseFloat(chart.elrwUsqnt) || 0;
+                    let globalGas = parseFloat(chart.ctyGasUsqnt) || 0;
+                    let globalElectricityDsa = parseFloat(chart.elrwGrgsDsamt) || 0;
+                    let globalGasDsa = parseFloat(chart.ctyGasGrgsDsamt) || 0;
+
+                    // 첫 번째 도넛 차트
+                    new Chart(document.getElementById("doughnut-chart1"), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['전기', '가스'],
+                            datasets: [{
+                                data: [globalElectricity, globalGas],
+                                backgroundColor: ['#e871ae', '#5aa5a7'],
+                                hoverBackgroundColor: [
+                                    '#e871ae', // 더 밝은 빨강
+                                    '#5aa5a7', // 더 밝은 파랑
+                                  ],
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    labels: {
+                                        padding: 20,
+                                        usePointStyle: true,
+                                        pointStyle: 'circle',
+                                        boxWidth: 20,
+                                        boxHeight: 20,
+                                        font: {
+                                            size: 16
+                                        }
+                                    }
+                                },
+                                tooltip: {
+            		                borderWidth: 1,
+            		                borderColor: '#eeeeee',
+            		                backgroundColor: '#ffffff',
+            		                padding: 10,
+            		                bodySpacing: 10,
+            		                titleColor: '#595959',
+            		                usePointStyle: true,
+            		                pointStyle: 'circle',
+            		                boxPadding: 5,
+            		                boxWidth: 10,
+            		                boxHeight: 10,
+            		                bodyColor: '#595959',
+            		                font: {
+            		                    size: 12
+            		                },
+            		                caretSize: 0,
+            		                // 툴팁 내 레이블 색상 변경
+            		                callbacks: {
+            		                    labelColor: (tooltipItem) => {
+            		                        if (tooltipItem.dataIndex === 1) {
+            		                            return {
+            		                                borderColor: '#5aa5a7',
+            		                                backgroundColor: '#5aa5a7'
+            		                            };
+            		                        }
+            		                        if (tooltipItem.dataIndex === 0) {
+            		                            return {
+            		                                borderColor: '#e871ae',
+            		                                backgroundColor: '#e871ae'
+            		                            };
+            		                        }
+            		                    },
+            		                }
+            		            }
+                            }
+                        }
+                    });
+
+                    // 두 번째 도넛 차트
+                    new Chart(document.getElementById("doughnut-chart2"), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['전기', '가스'],
+                            datasets: [{
+                                data: [globalElectricityDsa, globalGasDsa],
+                                backgroundColor: ['#e871ae', '#5aa5a7'],
+                                hoverBackgroundColor: [
+                                    '#e871ae', // 더 밝은 빨강
+                                    '#5aa5a7', // 더 밝은 파랑
+                                  ],
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    labels: {
+                                        padding: 20,
+                                        usePointStyle: true,
+                                        pointStyle: 'circle',
+                                        boxWidth: 20,
+                                        boxHeight: 20,
+                                        font: {
+                                            size: 16
+                                        }
+                                    }
+                                },
+                                tooltip: {
+            		                borderWidth: 1,
+            		                borderColor: '#eeeeee',
+            		                backgroundColor: '#ffffff',
+            		                padding: 10,
+            		                bodySpacing: 10,
+            		                titleColor: '#595959',
+            		                usePointStyle: true,
+            		                pointStyle: 'circle',
+            		                boxPadding: 5,
+            		                boxWidth: 10,
+            		                boxHeight: 10,
+            		                bodyColor: '#595959',
+            		                font: {
+            		                    size: 12
+            		                },
+            		                caretSize: 0,
+            		                // 툴팁 내 레이블 색상 변경
+            		                callbacks: {
+            		                    labelColor: (tooltipItem) => {
+            		                        if (tooltipItem.dataIndex === 1) {
+            		                            return {
+            		                                borderColor: '#5aa5a7',
+            		                                backgroundColor: '#5aa5a7'
+            		                            };
+            		                        }
+            		                        if (tooltipItem.dataIndex === 0) {
+            		                            return {
+            		                                borderColor: '#e871ae',
+            		                                backgroundColor: '#e871ae'
+            		                            };
+            		                        }
+            		                    },
+            		                }
+            		            }
+                            }
+                        }
+                    });
+                }
+            },
+            error: function (request, status, error) {
+                console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            }
+        });
+    }
+	
+	$(function(){
+        $('#login').on("click",function (e) {
+            e.preventDefault();
+        	let id = $('#id').val();
+            let pw = $('#pw').val();
+            
+            data={
+            	'id': id,
+            	'pw': pw
+            }
+
+            $.ajax({
+                type: "post",
+                url: "/login",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                success: function (data) {
+                	if(data == ''){
+                		alert("올바르지 않은 계정 정보입니다");
+                		$('.login-form')[0].reset();
+                	}
+                	else{
+                		$('#loginModal').modal('hide');
+                		$('.modal-backdrop').remove();  // 모달 뒤 배경 제거
+                    	$('#nonLogin').attr('src',"resources/icon/menu@3x.png")
+                    	$('#nonLogin').attr({
+                            'data-bs-toggle': 'offcanvas',
+                            'data-bs-target': '#offcanvasMyPage',
+                            'aria-controls': 'offcanvasMyPage'
+                        });
+                    	isLoggedIn = true;  // 로그인 상태로 변경
+                    	$('#inputId').val(data.id);
+                    	$('#defaultPw').val(data.pw);
+                    	$('#inputAddress').val(data.address);
+                    	$('#nonLoginId').text(data.id);
+                    	$('.blur-overlay').css('display', 'none');
+                    	$('.tooltip-1').css('display', 'block');
+                    	$('.tooltip-1').text(data.address);
+                    	$('#overlayCover').css('display', 'none');
+                    	
+                    	$.ajax({
+                            type: "post",
+                            url: "/chartView",
+                            data: data.address,
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (chart) {
+                            	if(data == ''){
+                            		alert("올바르지 않은 주소 정보입니다");
+                            	}
+                            	else{
+                            		
+                            		let globalElectricity = parseFloat(chart.elrwUsqnt) || 0; // 기본값 0
+                            		let globalGas = parseFloat(chart.ctyGasUsqnt) || 0;
+                            		let globalElectricityDsa = parseFloat(chart.elrwGrgsDsamt) || 0;
+                            		let globalGasDsa = parseFloat(chart.ctyGasGrgsDsamt) || 0;
+                            		
+                            		// 차트 색션 //
+                            		
+                            		console.log(globalElectricity)
+                            		console.log(globalGas)
+                            		console.log(globalElectricityDsa)
+                            		console.log(globalGasDsa)
+                            		
+                            		new Chart(document.getElementById("doughnut-chart1"), {
+                            			type : 'doughnut',
+                            			data : {
+                            					  labels: [
+                            					    '전기',
+                            					    '가스',
+                            					  ],
+                            					  datasets: [{
+                            					    data: [globalElectricity, globalGas],
+                            					    backgroundColor: [
+                            					      '#e871ae',
+                            					      '#5aa5a7'
+                            					    ],
+                            					    hoverBackgroundColor: [
+                                                        '#e871ae', // 더 밝은 빨강
+                                                        '#5aa5a7', // 더 밝은 파랑
+                                                      ],
+                            					    hoverOffset: 4
+                            			  	}]
+                            			},
+                            			options:{
+                            				plugins:{
+                            					legend: {
+                            		                display: true,
+                            		                labels: {
+                            		                    padding: 20,
+                            		                    usePointStyle: true,
+                            		                    pointStyle: 'circle',
+                            		                    boxWidth: 20,
+                            		                    boxHeight: 20,
+                            		                    font: {
+                            		                        size: 16
+                            		                    },
+                            		                }
+                            		            },
+                            		            tooltip: {
+                            		                borderWidth: 1,
+                            		                borderColor: '#eeeeee',
+                            		                backgroundColor: '#ffffff',
+                            		                padding: 10,
+                            		                bodySpacing: 10,
+                            		                titleColor: '#595959',
+                            		                usePointStyle: true,
+                            		                pointStyle: 'circle',
+                            		                boxPadding: 5,
+                            		                boxWidth: 10,
+                            		                boxHeight: 10,
+                            		                bodyColor: '#595959',
+                            		                font: {
+                            		                    size: 12
+                            		                },
+                            		                caretSize: 0,
+                            		                // 툴팁 내 레이블 색상 변경
+                            		                callbacks: {
+                            		                    labelColor: (tooltipItem) => {
+                            		                        if (tooltipItem.dataIndex === 1) {
+                            		                            return {
+                            		                                borderColor: '#5aa5a7',
+                            		                                backgroundColor: '#5aa5a7'
+                            		                            };
+                            		                        }
+                            		                        if (tooltipItem.dataIndex === 0) {
+                            		                            return {
+                            		                                borderColor: '#e871ae',
+                            		                                backgroundColor: '#e871ae'
+                            		                            };
+                            		                        }
+                            		                    },
+                            		                }
+                            		            }
+                            				}
+                            			}
+                            		});
+                            		
+                            		new Chart(document.getElementById("doughnut-chart2"), {
+                            			type : 'doughnut',
+                            			data : {
+                            					  labels: [
+                            					    '전기',
+                            					    '가스',
+                            					  ],
+                            					  datasets: [{
+                            					    data: [globalElectricityDsa, globalGasDsa],
+                            					    backgroundColor: [
+                            						      '#e871ae',
+                            						      '#5aa5a7'
+                            						],
+                            						hoverBackgroundColor: [
+                                                        '#e871ae', // 더 밝은 빨강
+                                                        '#5aa5a7', // 더 밝은 파랑
+                                                      ],
+                            					    hoverOffset: 4
+                            			  	}]
+                            			},
+                            			options:{
+                            				plugins:{
+                            					legend: {
+                            		                display: true,
+                            		                labels: {
+                            		                    padding: 20,
+                            		                    usePointStyle: true,
+                            		                    pointStyle: 'circle',
+                            		                    boxWidth: 20,
+                            		                    boxHeight: 20,
+                            		                    font: {
+                            		                        size: 16
+                            		                    },
+                            		                }
+                            		            },
+                            		            tooltip: {
+                            		                borderWidth: 1,
+                            		                borderColor: '#eeeeee',
+                            		                backgroundColor: '#ffffff',
+                            		                padding: 10,
+                            		                bodySpacing: 10,
+                            		                titleColor: '#595959',
+                            		                usePointStyle: true,
+                            		                pointStyle: 'circle',
+                            		                boxPadding: 5,
+                            		                boxWidth: 10,
+                            		                boxHeight: 10,
+                            		                bodyColor: '#595959',
+                            		                font: {
+                            		                    size: 12
+                            		                },
+                            		                caretSize: 0,
+                            		                // 툴팁 내 레이블 색상 변경
+                            		                callbacks: {
+                            		                    labelColor: (tooltipItem) => {
+                            		                        if (tooltipItem.dataIndex === 1) {
+                            		                            return {
+                            		                                borderColor: '#5aa5a7',
+                            		                                backgroundColor: '#5aa5a7'
+                            		                            };
+                            		                        }
+                            		                        if (tooltipItem.dataIndex === 0) {
+                            		                            return {
+                            		                                borderColor: '#e871ae',
+                            		                                backgroundColor: '#e871ae'
+                            		                            };
+                            		                        }
+                            		                    },
+                            		                }
+                            		            }
+                            				}
+                            			}
+                            		});
+                            		
+                            		// 차트 색션 //
+                            		
+                            	}
+                            },
+                            error: function (request, status, error) {
+                                console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                            }
+                        });
+                    	
+                	}
+                },
+                error: function (request, status, error) {
+                    console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                }
+            });
+        });
+    });
+	
+	$(function(){
+        $('#signUp').on("click",function () {
+        	
+        	let id = $('#newId').val();
+            let pw = $('#newPw').val();
+            let place = $('.newPlace').val();
+            
+            if(!id){
+            	alert("아이디를 입력해주세요.");
+		        return;
+            }
+            
+            if(!pw){
+            	alert("비밀번호를 입력해주세요.");
+		        return;
+            }
+            
+            if(!place){
+            	alert("주소를 입력해주세요");
+		        return;
+            }
+            
+            if ($('#bad').css("display") === "block") {
+            	alert("이미 사용중인 아이디 입니다.");
+		        return;
+            } 
+            
+            data={
+            	'id': id,
+            	'pw': pw,
+            	'address': place
+            }
+
+            $.ajax({
+                type: "post",
+                url: "/regist",
+                data: JSON.stringify(data),
+                contentType: 'application/json;',
+                success: function (data) {
+                	$('#loginModal').modal('hide');
+                	$('.modal-backdrop').remove();  // 모달 뒤 배경 제거
+                	$('#nonLogin').attr('src',"resources/icon/menu@3x.png")
+                	$('#nonLogin').attr({
+                            'data-bs-toggle': 'offcanvas',
+                            'data-bs-target': '#offcanvasMyPage',
+                            'aria-controls': 'offcanvasMyPage'
+                        });
+                	isLoggedIn = true;  // 로그인 상태로 변경
+                	$('#inputId').val(data.id);
+                	$('#defaultPw').val(data.pw);
+                	$('#inputAddress').val(data.address);
+                	$('#nonLoginId').text(data.id);
+                	$('.blur-overlay').css('display', 'none');
+                	$('.tooltip-1').css('display', 'block');
+                	$('.tooltip-1').text(data.address);
+                	$('#overlayCover').css('display', 'none');
+                	
+                	$.ajax({
+                        type: "post",
+                        url: "/chartView",
+                        data: data.address,
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (chart) {
+                        	if(data == ''){
+                        		alert("올바르지 않은 주소 정보입니다");
+                        	}
+                        	else{
+                        		
+                        		let globalElectricity = parseFloat(chart.elrwUsqnt) || 0; // 기본값 0
+                        		let globalGas = parseFloat(chart.ctyGasUsqnt) || 0;
+                        		let globalElectricityDsa = parseFloat(chart.elrwGrgsDsamt) || 0;
+                        		let globalGasDsa = parseFloat(chart.ctyGasGrgsDsamt) || 0;
+                        		
+                        		// 차트 색션 //
+                        		
+                        		console.log(globalElectricity)
+                        		console.log(globalGas)
+                        		console.log(globalElectricityDsa)
+                        		console.log(globalGasDsa)
+                        		
+                        		new Chart(document.getElementById("doughnut-chart1"), {
+                        			type : 'doughnut',
+                        			data : {
+                        					  labels: [
+                        					    '전기',
+                        					    '가스',
+                        					  ],
+                        					  datasets: [{
+                        					    data: [globalElectricity, globalGas],
+                        					    backgroundColor: [
+                        					      '#e871ae',
+                        					      '#5aa5a7'
+                        					    ],
+                        					    hoverOffset: 4
+                        			  	}]
+                        			},
+                        			options:{
+                        				plugins:{
+                        					legend: {
+                        		                display: true,
+                        		                labels: {
+                        		                    padding: 20,
+                        		                    usePointStyle: true,
+                        		                    pointStyle: 'circle',
+                        		                    boxWidth: 20,
+                        		                    boxHeight: 20,
+                        		                    font: {
+                        		                        size: 16
+                        		                    },
+                        		                }
+                        		            },
+                        		            tooltip: {
+                        		                borderWidth: 1,
+                        		                borderColor: '#eeeeee',
+                        		                backgroundColor: '#ffffff',
+                        		                padding: 10,
+                        		                bodySpacing: 10,
+                        		                titleColor: '#595959',
+                        		                usePointStyle: true,
+                        		                pointStyle: 'circle',
+                        		                boxPadding: 5,
+                        		                boxWidth: 10,
+                        		                boxHeight: 10,
+                        		                bodyColor: '#595959',
+                        		                font: {
+                        		                    size: 12
+                        		                },
+                        		                caretSize: 0,
+                        		                // 툴팁 내 레이블 색상 변경
+                        		                callbacks: {
+                        		                    labelColor: (tooltipItem) => {
+                        		                        if (tooltipItem.dataIndex === 1) {
+                        		                            return {
+                        		                                borderColor: '#5aa5a7',
+                        		                                backgroundColor: '#5aa5a7'
+                        		                            };
+                        		                        }
+                        		                        if (tooltipItem.dataIndex === 0) {
+                        		                            return {
+                        		                                borderColor: '#e871ae',
+                        		                                backgroundColor: '#e871ae'
+                        		                            };
+                        		                        }
+                        		                    },
+                        		                }
+                        		            }
+                        				}
+                        			}
+                        		});
+                        		
+                        		new Chart(document.getElementById("doughnut-chart2"), {
+                        			type : 'doughnut',
+                        			data : {
+                        					  labels: [
+                        					    '전기',
+                        					    '가스',
+                        					  ],
+                        					  datasets: [{
+                        					    data: [globalElectricityDsa, globalGasDsa],
+                        					    backgroundColor: [
+                        						      '#e871ae',
+                        						      '#5aa5a7'
+                        						],
+                        					    hoverOffset: 4
+                        			  	}]
+                        			},
+                        			options:{
+                        				plugins:{
+                        					legend: {
+                        		                display: true,
+                        		                labels: {
+                        		                    padding: 20,
+                        		                    usePointStyle: true,
+                        		                    pointStyle: 'circle',
+                        		                    boxWidth: 20,
+                        		                    boxHeight: 20,
+                        		                    font: {
+                        		                        size: 16
+                        		                    },
+                        		                }
+                        		            },
+                        		            tooltip: {
+                        		                borderWidth: 1,
+                        		                borderColor: '#eeeeee',
+                        		                backgroundColor: '#ffffff',
+                        		                padding: 10,
+                        		                bodySpacing: 10,
+                        		                titleColor: '#595959',
+                        		                usePointStyle: true,
+                        		                pointStyle: 'circle',
+                        		                boxPadding: 5,
+                        		                boxWidth: 10,
+                        		                boxHeight: 10,
+                        		                bodyColor: '#595959',
+                        		                font: {
+                        		                    size: 12
+                        		                },
+                        		                caretSize: 0,
+                        		                // 툴팁 내 레이블 색상 변경
+                        		                callbacks: {
+                        		                    labelColor: (tooltipItem) => {
+                        		                        if (tooltipItem.dataIndex === 1) {
+                        		                            return {
+                        		                                borderColor: '#5aa5a7',
+                        		                                backgroundColor: '#5aa5a7'
+                        		                            };
+                        		                        }
+                        		                        if (tooltipItem.dataIndex === 0) {
+                        		                            return {
+                        		                                borderColor: '#e871ae',
+                        		                                backgroundColor: '#e871ae'
+                        		                            };
+                        		                        }
+                        		                    },
+                        		                }
+                        		            }
+                        				}
+                        			}
+                        		});
+                        		
+                        		// 차트 색션 //
+                        		
+                        	}
+                        },
+                        error: function (request, status, error) {
+                            console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                        }
+                    });
+                },
+                error: function (request, status, error) {
+                    console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                }
+            });
+        });
+        
+        $(function(){
+            $('#update').on("click",function () {
+           		
+            	let id = $('#inputId').val();
+            	
+            	let pw ="";
+            	
+            	if($('#inputPassword').val() ==''){
+            		pw = $('#defaultPw').val();
+            	} else{
+            		pw = $('#inputPassword').val();
+            	}
+           
+            	let place = $('#inputAddress').val();
+                
+                data={
+                	'id': id,
+                	'pw': pw,
+                	'address': place
+                }
+                
+                $.ajax({
+                    type: "post",
+                    url: "/update",
+                    data: JSON.stringify(data),
+                    contentType: 'application/json;',
+                    success: function (data) {
+                    	$('#defaultPw').val(data.pw);
+                    	$('#inputPassword').val('');
+                    	$('#inputAddress').val(data.address);
+                    	$('.tooltip-1').text(data.address);
+                    },
+                    error: function (request, status, error) {
+                        console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                    }
+                })
+            })
+        });
+        
+        $('#logout').on("click", function() {
+        	$.ajax({
+                type: "POST",
+                url: "/logout",
+                success: function (data) {
+                	location.reload(true);
+                },
+                error: function (request, status, error) {
+                    console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                }
+            })
+		})
+		
+		$('#exit').on("click", function(){
+			let id = $('#inputId').val();
+			
+			data={
+                	'id': id,
+                }
+			
+			$.ajax({
+				method: "GET",
+				url: "/exit",
+				data: data,
+                success: function (data) {
+                	location.reload(true);
+                },
+                error: function (request, status, error) {
+                    console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                }
+			})
+		})
+        
+    	// 이미지 클릭 시 이벤트
+        $('#nonLogin').on("click", function () {
+            if (!isLoggedIn) {
+            	// 로그인되지 않은 상태에서 이미지 클릭 시 모달 표시
+                $('#loginModal').modal('show');
+            } 
+        });
+        
+        $('.btn-login').on("click", function () {
+        	if (!isLoggedIn) {
+            	// 로그인되지 않은 상태에서 이미지 클릭 시 모달 표시
+                $('#loginModal').modal('show');
+            } 
+        });
+        
+     	// 비밀번호 토글 기능을 공통 함수로 처리
+        $('i.fa').on('click', function() {
+            const passwordInput = $($(this).data('target'));  // data-target 속성으로 해당 입력 필드 선택
+            passwordInput.toggleClass('active');
+            
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                passwordInput.attr('type', 'password');
+                $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+            }
+        });
+     	
+
+        $('#loginModal').on('hidden.bs.modal', function () {
+        	  $('#good').css("display", "none")
+        	  $('#bad').css("display", "none")
+        	  $('.signUp-form')[0].reset() // 폼 초기화
+        	  $('.signIn-form')[0].reset() // 폼 초기화
+        })
+    });
+});
+
+function showLogin() {
+    // 로그인 섹션 활성화
+    document.querySelector('.login-section').classList.add('active');
+    document.querySelector('.signup-section').classList.remove('active');
+
+    // 헤더 스타일 변경
+    document.querySelector('.left-header').classList.add('active');
+    document.querySelector('.right-header').classList.remove('active');
+}
+
+function showSignup() {
+    // 회원가입 섹션 활성화
+    document.querySelector('.signup-section').classList.add('active');
+    document.querySelector('.login-section').classList.remove('active');
+
+    // 헤더 스타일 변경
+    document.querySelector('.right-header').classList.add('active');
+    document.querySelector('.left-header').classList.remove('active');
+    
+    
+}
+
+
+function execDaumPostcode() {
+	 new daum.Postcode({
+		oncomplete: function(data) {
+	            let addr = data.jibunAddress;
+	            $('.newPlace').val(addr);
+		}
+	}).open();
+}
+
+function idCheck() {
+	let id = $('#newId').val();
+
+	// 입력란의 값이 없으면 모든 span 태그 숨김
+	if (id == "") {
+		$('#good').css("display", "none");
+		$('#bad').css("display", "none");
+		return;
+	}
+	
+	$.ajax({
+		type : 'post',
+		url : '/idCheck',
+		data : {
+			id : id
+		},
+		success : function(cnt) { 
+			if (cnt == 0) { // cnt가 0일 경우 -> 사용 가능한 아이디 
+				$('#good').css("display", "block")
+				$('#bad').css("display", "none")
+			} else { // cnt가 1일 경우 -> 이미 존재하는 아이디
+				$('#bad').css("display", "block")
+				$('#good').css("display", "none")
+			}
+		},
+		error : function() {
+			alert("아이디 확인 중 오류가 발생했습니다.");
+		}
+	});
+}
+
+function closeModal() {
+	$('#loginModal').modal('hide');
+	$('.signIn-form')[0].reset();
+	$('.signUp-form')[0].reset();
+	$('#good').css("display", "none")
+	$('#bad').css("display", "none")
+}
+
+</script>
+</html>

@@ -1,0 +1,8 @@
+package com.zero.re.use.service;
+
+import org.springframework.stereotype.Service;
+
+@Service("useService")
+public class UseServiceImpl implements UserService {
+
+}

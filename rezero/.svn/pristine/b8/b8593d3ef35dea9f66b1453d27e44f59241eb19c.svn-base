@@ -1,0 +1,12 @@
+package com.zero.re.energy.service;
+
+import java.util.List;
+
+import com.zero.re.energy.vo.EnergyVO;
+import com.zero.re.energy.vo.InfoVO;
+
+public interface EnergyService {
+	public List<EnergyVO> energyShow(InfoVO vo); 
+	public List<EnergyVO> daejeonShow(InfoVO vo); 
+	public List<EnergyVO> guShow(InfoVO vo); 
+}

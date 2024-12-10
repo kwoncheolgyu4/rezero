@@ -1,0 +1,48 @@
+package com.zero.re.energy.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zero.re.energy.service.EnergyService;
+import com.zero.re.energy.vo.EnergyVO;
+import com.zero.re.energy.vo.InfoVO;
+import com.zero.re.energy.vo.ListVO;
+
+@Controller
+public class EnergyController {
+
+	@Autowired
+	EnergyService energyService;
+	
+	@ResponseBody
+	@RequestMapping("/showEnergy")
+	public ListVO energyShow(@RequestBody InfoVO vo) {
+	    System.out.println(vo);
+
+	    List<EnergyVO> energyList = null; // 초기화
+	    List<EnergyVO> guList = null;     // 초기화
+	    List<EnergyVO> energyGu = null;     // 초기화
+	    List<EnergyVO> energyDong = null;     // 초기화
+	    List<EnergyVO> daejeonList = energyService.daejeonShow(vo); // 공통 호출
+
+	    if (vo.getDongyn().equals("N")) { 
+	        guList = energyService.guShow(vo); // N인 경우 guList 사용
+	        energyGu = energyService.energyGu(vo);
+	        
+	    } else if (vo.getDongyn().equals("Y")) {
+	        energyList = energyService.energyShow(vo); // Y인 경우 energyList 사용
+	        energyDong = energyService.energyDong(vo);
+	    }
+
+	    System.out.println(energyGu);
+	    System.out.println(energyDong);
+	    
+	    // dongYn에 따라 적절한 데이터를 포함한 ListVO 반환
+	    return new ListVO(energyList, daejeonList, guList, energyGu, energyDong);
+	}
+}

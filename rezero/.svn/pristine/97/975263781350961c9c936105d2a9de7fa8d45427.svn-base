@@ -1,0 +1,731 @@
+body {
+    font-family: Pretendard, sans-serif !important;
+    background-color: #2b6466 !important;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.navbar {
+    height: 94px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+}
+
+.navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.navbar img.logo {
+    height: 38px;
+    padding-left: 140px;
+    cursor: pointer;
+}
+
+.navbar .menu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-right: 126px;
+    cursor: pointer;
+}
+
+.navbar img.icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.navbar img.icon:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+.custom-rectangle {
+	background-image: url('../img/background.png'); /* 상대 경로 */
+    background-size: cover; /* 영역에 꽉 채움 */
+    background-position: center; /* 이미지 중앙 정렬 */
+    background-repeat: no-repeat; /* 반복 방지 */
+    width: 814px;
+    height: 962px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #fff;
+}
+
+.second-rectangle {
+    margin-top: 12px !important;
+    width: 880px;
+    height: 708px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #effafb;
+}
+
+.third-rectangle {
+    width: 880px;
+    height: 420px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #effafb;
+}
+
+/* 지도와 버튼 사이 간격 설정 */
+.cu-1 {
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+}
+
+/* 버튼 내부 원 스타일 */
+.rounded-circle {
+    background-color: #0c4f49;
+}
+
+/* 버튼 스타일 */
+.custom-small-rectangle {
+    position: relative;
+    width: 394px;
+    height: 70px;
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+    padding-left: 30px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #effafb;
+    border: none;
+    cursor: pointer;
+
+    /* 텍스트 스타일 추가 */
+    font-family: Pretendard;
+    font-weight: 700;
+    font-size: 24px;
+    text-align: left;
+    /* 텍스트 왼쪽 정렬 */
+    display: flex;
+    align-items: center;
+    /* 텍스트와 원 세로 중앙 정렬 */
+    color: #094037;
+    /* 텍스트 색상 변경 */
+}
+
+/* Hover 효과 */
+.custom-small-rectangle:hover {
+    background-color: #d4f4f6;
+    /* 배경색 변경 */
+    color: #094037;
+    /* 텍스트 색상 변경 */
+    text-decoration: none;
+    /* 밑줄 제거 */
+}
+.custom-small-rectangle-2 {
+    position: relative;
+    width: 814px;
+    height: 70px;
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+    padding-left: 30px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.4);
+    background-color: #effafb;
+    border: none;
+    cursor: pointer;
+    font-family: Pretendard;
+    font-weight: 700;
+    font-size: 24px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    color: #094037;
+}
+/* Hover 효과 */
+.custom-small-rectangle-2:hover {
+    background-color: #d4f4f6;
+    /* 배경색 변경 */
+    color: #094037;
+    /* 텍스트 색상 변경 */
+    text-decoration: none;
+    /* 밑줄 제거 */
+}
+/* 하단 아이콘 스타일 */
+img.community-fill {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    /* 이미지를 원에 맞게 */
+}
+
+.Rectangle-4 {
+    border-radius: 15px;
+    box-shadow: 3px 3px 0 0 #95c0c3;
+    background-color: #fff;
+    position: absolute;
+    z-index: 3;
+}
+
+
+/* Chart 아이콘 스타일 */
+img.Chart {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+/* 텍스트 스타일 */
+.text-mystyle-1 {
+    font-size: 30px;
+    font-weight: 600;
+    color: #020606;
+}
+
+.text-mystyle-2 {
+    color: #0c4f49;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.text-mystyle-3 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #020606;
+}
+
+.text-mystyle-4 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #00342f;
+}
+
+/* 텍스트 배경 스타일 */
+.text-background {
+    background-color: #c7e3e5;
+    /* 배경색 */
+    padding: 5px 10px;
+    /* 텍스트 안쪽 여백 */
+    border-radius: 10px;
+    /* 라운드 모서리 */
+    display: inline-block;
+    /* 배경색 영역을 텍스트에 맞춤 */
+    font-weight: bold;
+    /* 텍스트 강조 (필요 시 제거 가능) */
+}
+
+/* 공통 스타일 */
+.Rectangle-9 {
+    width: 100px;
+    height: 42px;
+    position: absolute;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: #EC90C0; /* 기본 핑크색 */
+    box-shadow: none; /* 기본 섀도우 없음 */
+    transition: all 0.3s ease; /* 부드러운 상태 변경 */
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    cursor: pointer; /* 클릭 가능한 스타일 */
+}
+
+/* 선택된 상태 */
+.Rectangle-9.active {
+    width: 104px; /* 넓이 증가 */
+    height: 46px; /* 높이 증가 */
+    background-color: #327476; /* 선택된 녹색 */
+    z-index: 2; /* 선택된 상태는 더 높은 z-index */
+    transform: translateY(-3px); /* 위로 살짝 이동 */
+    box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease; /* 부드러운 전환 */
+}
+
+/* 비활성화 상태 */
+.Rectangle-9:not(.active):hover {
+    background-color: #E07EB1; /* 선택되지 않은 상태에서 호버 시 배경색 어둡게 */
+    transition: all 0.3s ease; /* 부드러운 전환 */
+}
+
+/* 텍스트 공통 스타일 */
+.styled-text {
+    font-family: Pretendard, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease; /* 색상 변화에 애니메이션 */
+}
+
+/* 선택된 텍스트 */
+.active-text {
+    color: #FFFFFF; /* 활성화된 텍스트 색상 */
+    font-size: 22px; /* 선택된 상태에서 텍스트 크기 증가 */
+}
+
+/* 선택되지 않은 텍스트 */
+.inactive-text {
+    color: #FFFFFF; /* 비활성화된 텍스트 색상 */
+    transition: all 0.3s ease; /* 부드러운 전환 */
+}
+
+
+
+
+/* 슬라이더 컨테이너 */
+.slider-container {
+    width: 362px;
+    height: 34px;
+    border-radius: 20px;
+    background-color: #fff;
+    box-shadow: 1px 1px 0 0 #95c0c3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 텍스트 중앙 정렬 */
+    position: relative;
+    margin-top: 18px; /* 요소의 외부에 20px 간격 추가 */
+    margin-bottom: 10px;
+}
+
+/* 슬라이드 버튼 */
+.slider-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 180px;
+    height: 34px;
+    border-radius: 20px;
+    background-color: #286E71;
+    transition: left 0.3s ease;
+    /* 버튼 이동 부드럽게 */
+}
+
+/* 고정된 텍스트 */
+.slider-text-left,
+.slider-text-right {
+    font-size: 20px;
+    font-weight: 500;
+    z-index: 1;
+    position: absolute;
+    width: 180px;
+    text-align: center;
+    line-height: 34px;
+    pointer-events: none;
+    transition: color 0.3s ease;
+    /* 글자 색상 변경 부드럽게 */
+}
+/* 왼쪽 텍스트 */
+.slider-text-left {
+    left: 0;
+    color: #fff;
+    /* 초기 색상 */
+}
+
+/* 오른쪽 텍스트 */
+.slider-text-right {
+    right: 0;
+    color: #286E71;
+    /* 초기 색상 */
+}
+
+/* 스타일 버튼 */
+.styled-button {
+    width: 146px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    /* 수직 정렬 */
+    justify-content: center;
+    /* 수평 정렬 */
+    border-radius: 20px;
+    font-family: Pretendard, sans-serif;
+    /* 폰트 설정 */
+    font-size: 18px;
+    /* 텍스트 크기 */
+    font-weight: 600;
+    /* 텍스트 굵기 */
+    text-align: center;
+    /* 텍스트 중앙 정렬 */
+    cursor: pointer;
+    border: solid 2px #adadad;
+    /* 비활성화 상태 테두리 */
+    background-color: #FFFFFF;
+    /* 비활성화 배경 */
+    color: #adadad;
+    /* 비활성화 텍스트 색상 */
+}
+/* 비활성화 상태 버튼 호버 스타일 */
+.styled-button:not(.active):hover {
+    border: solid 2px #539997; /* 호버 시 더 진한 테두리 */
+    color: #539997; /* 호버 시 텍스트 색상 변경 */
+    transition: all 0.3s ease; /* 부드러운 전환 효과 */
+}
+/* 활성화된 버튼 스타일 */
+.styled-button.active {
+    border: solid 2px #286E71;
+    /* 활성화 상태 테두리 */
+    background-color: #FFFFFF;
+    /* 활성화 배경 */
+    color: #286E71;
+    /* 활성화 텍스트 색상 */
+}
+/* Footer styling */
+footer {
+    height: 132px;
+    background-color: #f5feff;
+    box-shadow: -3px -3px 0 0 rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+}
+
+/* 마이페이지 */
+.offcanvas-custom {
+    width: 420px !important;
+    height: 100% !important;
+    box-shadow: inset 0 -2px 1px 0 rgba(113, 157, 158, 0.4) !important;
+    background-color: #fff !important;
+    border-top-left-radius: 12px !important;
+    border-bottom-left-radius: 12px !important;
+}
+
+.offcanvas-header {
+    background-color: #FFA1D1 !important;
+    color: white !important;
+    border-top-left-radius: 12px !important;
+    height: 80px !important;
+    display: flex !important;
+    align-items: center !important; /* 세로 중앙 정렬 */
+    justify-content: flex-start !important; /* 아이콘과 제목은 왼쪽 정렬 */
+    position: relative !important; /* X 버튼을 absolute로 배치하기 위해 필요 */
+    padding: 0 16px !important; /* 양쪽 여백 */
+}
+
+.offcanvas-title {
+    font-size: 26px !important; /* 글씨 크기 */
+    font-weight: bold !important;
+    margin-left: 12px !important; /* 아이콘과 간격 */
+    text-shadow: 3px 3px 0 #F081BE !important;
+    font-weight: 600 !important;
+}
+
+.offcanvas-icon {
+    width: 40px !important; /* 아이콘 크기 */
+    height: 40px !important;
+}
+
+.btn-close {
+    position: absolute !important; /* X 버튼을 오른쪽 끝으로 이동 */
+    right: 24px !important; /* 오른쪽 여백 */
+    align-items: center !important; /* 세로 중앙 정렬 */
+    color: white !important; /* 버튼 색상 */
+    opacity: 1 !important;
+}
+
+.offcanvas-body {
+    padding-top: 26px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-bottom: 20px !important;
+}
+
+.form-label {
+    color: #417274 !important;
+    font-size: 22px !important; /* 라벨 글씨 크기 */
+    margin-bottom: 6px !important; /* 폼과 간격 */
+    margin-left: 6px !important;
+    font-weight: 600 !important;
+}
+
+.form-control {
+    border-radius: 12px !important;
+    box-shadow: inset 0 -2px 1px 0 #9dc2c3 !important;
+    background-color: #cfe9ea !important;
+    height: 54px !important;
+    margin-bottom: 20px !important; /* 다음 요소와 간격 */
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    color: #417274 !important;
+}
+
+.form-control:disabled {
+    box-shadow: inset 0 -2px 1px 0 #719d9e !important;
+    background-color: #A0D4D6 !important;
+    font-weight: 600 !important;
+}
+
+.form-control:focus {
+    outline: none !important; /* 기본 outline 제거 */
+    border: 2px solid #58A4A7 !important; /* 포커스 시 테두리 색상 */
+    background-color: #eff6f6 !important; /* 포커스 시 배경색 변경 */
+    box-shadow: none !important;
+    color: #094037 !important; /* 텍스트 색상 */
+}
+
+.form-control::placeholder {
+    font-size: 20px !important;
+    color: #417274 !important;
+    font-weight: 500 !important;
+}
+
+.btn-1 {
+    background-color: #58A4A7 !important;
+    box-shadow: inset 0 -2px 1px 0 #238c90 !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    height: 54px !important;
+    width: 116px !important;
+    font-size: 20px !important;
+}
+
+.btn-2 {
+    background-color: #58A4A7 !important;
+    box-shadow: inset 0 -2px 1px 0 #238c90 !important;
+    border-radius: 12px !important;
+    color: #fff !important;
+    height: 48px !important;
+    margin-bottom: 18px !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+.btn-3 {
+    background-color: #FFA1D1 !important;
+    box-shadow: inset 0 -2px 1px 0 #F081BE !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    height: 48px !important;
+    margin-bottom: 6px !important; /* 다음 요소와 간격 */
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+.btn-1:hover {
+    background-color: #238c90 !important; /* 버튼 호버 시 배경색 */
+    color: #fff !important; /* 텍스트 색상 */
+}
+
+.btn-2:hover {
+    background-color: #238c90 !important; /* 수정 버튼 호버 배경색 */
+    color: #fff !important;
+}
+
+.btn-3:hover {
+    background-color: #F081BE !important; /* 로그아웃 버튼 호버 배경색 */
+    color: #fff !important;
+}
+
+.divider {
+    border-bottom: 3px dashed #9dc2c3 !important;
+    margin: 32px 0 !important;
+    margin-bottom: 10px !important;
+}
+
+.btn-link {
+    color: #505050 !important;
+    text-decoration: underline !important;
+}
+
+.btn-link:hover {
+    color: #505050 !important;
+    text-decoration: underline !important;
+}
+.offcanvas-backdrop{
+    background-color: #050A09 !important;
+}
+.offcanvas-backdrop.show {
+    opacity: .6 !important;
+}
+
+
+/*사용자 추후 수정 */
+.chart-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 10px;
+}
+
+.chart-container {
+    width: 36%; /* 차트 간격 */
+    height: 100%;
+    position: relative;
+}
+
+.blur-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(240, 254, 253, 0.6); /* 밝고 부드러운 반투명 배경 */
+    backdrop-filter: blur(10px); /* 블러 효과 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    z-index: 2; /* 차트 위에 오버레이 배치 */
+    text-align: center;
+    pointer-events: all; /* 상호작용 가능 */
+}
+
+/* 메시지 박스 스타일 */
+.message-box {
+    background-color: #ffffff; /* 흰색 배경 */
+    border-radius: 15px; /* 모서리를 둥글게 */
+    padding: 20px 30px; /* 내부 여백 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 700px; /* 박스의 최대 너비 */
+    margin: auto; /* 수평 중앙 정렬 */
+}
+.blur-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    pointer-events: none; /* 기본적으로 상호작용 방지 */
+    z-index: 1;
+}
+
+.blur-overlay .btn-login {
+    z-index: 3; /* 버튼이 상호작용 가능하도록 */
+    pointer-events: auto; /* 버튼만 클릭 가능 */
+    background-color: #58A4A7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.blur-overlay .btn-login:hover {
+    background-color: #238c90;
+    color: white;
+}
+.blur-message {
+    font-size: 20px;
+    font-weight: 600;
+    color: #020606;
+    margin-bottom: 6px;
+}
+
+.fa-eye-slash{
+    position: absolute;
+    right: 22px;
+    top: 60%;
+    color: black;
+}
+
+.fa-eye, .fa-eye-slash::after{
+    position: absolute;
+    left: 85%;
+    top: 60%;
+    color: black;
+}
+
+/*주소*/
+.Rectangle-10 {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 104px;
+    height: 46px;
+    padding: 9px 13px 7px;
+    background-color: #327476;
+    position: absolute;
+    display: flex;
+    align-items: center; /* 아이콘과 텍스트 세로 정렬 */
+    justify-content: center; /* 가로 정렬 */
+    z-index: 2;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, height 0.3s ease; /* 부드러운 전환 */
+}
+
+.Rectangle-10:hover {
+    height: 48px; /* 컨테이너 크기 변경 */
+    transform: translateY(-2px); /* 컨테이너 이동 */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* 그림자 강조 */
+}
+
+.address-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 6px;
+    transform: translateY(0); /* 기본 위치 */
+    transition: transform 0.3s ease; /* 부드러운 전환 */
+}
+
+
+.styled-text-7 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #EFFAFB;
+    margin: 0; /* 여백 제거 */
+    line-height: 2; /* 텍스트 높이를 정확히 맞춤 */
+    transform: translateY(0); /* 기본 위치 */
+    transition: transform 0.3s ease; /* 부드러운 전환 */
+}
+.Rectangle-10:hover .address-icon,
+.Rectangle-10:hover .styled-text-7 {
+    transform: translateY(-1px); /* 컨테이너와 동일하게 이동 */
+}
+.tooltip-1 {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: -65px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #00342f;
+    color: #fff;
+    text-align: center;
+    max-width: 380px; /* 최대 너비 설정 */
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: Pretendard, sans-serif !important;
+    white-space: nowrap;
+    z-index: 3;
+    transition: opacity 0.3s ease-in-out;
+    box-shadow: 3px 0 3px rgba(0, 0, 0, 0.2), 0 0 0 2px #fff; /* 흰색 테두리와 아래쪽 그림자 */
+    align-items: center; /* 세로 가운데 정렬 */
+    justify-content: center; /* 가로 가운데 정렬 */
+    word-wrap: break-word; /* 텍스트가 긴 경우 줄바꿈 허용 */
+    display: inline-block; /* 길이에 따라 박스가 동적으로 조정 */
+    text-overflow: ellipsis; /* 텍스트가 초과하면 말줄임표 추가 */
+}
+
+.tooltip-1::after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: #00342f transparent transparent transparent;
+    z-index: 3; /* 툴팁과 동일한 z-index */
+}
+
+.Rectangle-10:hover .tooltip-1 {
+    visibility: visible;
+    opacity: 1;
+}
+/*로그인*/
